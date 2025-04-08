@@ -1,0 +1,14 @@
+C:\Users\Xipetotec\Documents\code\repos\school\CSC407\CSC-407-prog4-ZappaQuest\ZappaQuest\bin\Debug\net9.0\ZappaQuest.exe
+C:\Users\Xipetotec\Documents\code\repos\school\CSC407\CSC-407-prog4-ZappaQuest\ZappaQuest\bin\Debug\net9.0\ZappaQuest.deps.json
+C:\Users\Xipetotec\Documents\code\repos\school\CSC407\CSC-407-prog4-ZappaQuest\ZappaQuest\bin\Debug\net9.0\ZappaQuest.runtimeconfig.json
+C:\Users\Xipetotec\Documents\code\repos\school\CSC407\CSC-407-prog4-ZappaQuest\ZappaQuest\bin\Debug\net9.0\ZappaQuest.dll
+C:\Users\Xipetotec\Documents\code\repos\school\CSC407\CSC-407-prog4-ZappaQuest\ZappaQuest\bin\Debug\net9.0\ZappaQuest.pdb
+C:\Users\Xipetotec\Documents\code\repos\school\CSC407\CSC-407-prog4-ZappaQuest\ZappaQuest\obj\Debug\net9.0\ZappaQuest.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Xipetotec\Documents\code\repos\school\CSC407\CSC-407-prog4-ZappaQuest\ZappaQuest\obj\Debug\net9.0\ZappaQuest.AssemblyInfoInputs.cache
+C:\Users\Xipetotec\Documents\code\repos\school\CSC407\CSC-407-prog4-ZappaQuest\ZappaQuest\obj\Debug\net9.0\ZappaQuest.AssemblyInfo.cs
+C:\Users\Xipetotec\Documents\code\repos\school\CSC407\CSC-407-prog4-ZappaQuest\ZappaQuest\obj\Debug\net9.0\ZappaQuest.csproj.CoreCompileInputs.cache
+C:\Users\Xipetotec\Documents\code\repos\school\CSC407\CSC-407-prog4-ZappaQuest\ZappaQuest\obj\Debug\net9.0\ZappaQuest.dll
+C:\Users\Xipetotec\Documents\code\repos\school\CSC407\CSC-407-prog4-ZappaQuest\ZappaQuest\obj\Debug\net9.0\refint\ZappaQuest.dll
+C:\Users\Xipetotec\Documents\code\repos\school\CSC407\CSC-407-prog4-ZappaQuest\ZappaQuest\obj\Debug\net9.0\ZappaQuest.pdb
+C:\Users\Xipetotec\Documents\code\repos\school\CSC407\CSC-407-prog4-ZappaQuest\ZappaQuest\obj\Debug\net9.0\ZappaQuest.genruntimeconfig.cache
+C:\Users\Xipetotec\Documents\code\repos\school\CSC407\CSC-407-prog4-ZappaQuest\ZappaQuest\obj\Debug\net9.0\ref\ZappaQuest.dll
