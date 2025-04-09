@@ -12,3 +12,4 @@ C:\Users\Xipetotec\Documents\code\repos\school\CSC407\CSC-407-prog4-ZappaQuest\Z
 C:\Users\Xipetotec\Documents\code\repos\school\CSC407\CSC-407-prog4-ZappaQuest\ZappaQuest\obj\Debug\net9.0\ZappaQuest.pdb
 C:\Users\Xipetotec\Documents\code\repos\school\CSC407\CSC-407-prog4-ZappaQuest\ZappaQuest\obj\Debug\net9.0\ZappaQuest.genruntimeconfig.cache
 C:\Users\Xipetotec\Documents\code\repos\school\CSC407\CSC-407-prog4-ZappaQuest\ZappaQuest\obj\Debug\net9.0\ref\ZappaQuest.dll
+C:\Users\Xipetotec\Documents\code\repos\school\CSC407\CSC-407-prog4-ZappaQuest\ZappaQuest\obj\Debug\net9.0\ZappaQuest.sourcelink.json

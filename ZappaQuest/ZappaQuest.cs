@@ -1,7 +1,14 @@
-﻿
+﻿using System;
+using ZappaQuest;
 
-
-Console.WriteLine("ZAPPA QUEST!");
-
-
-
+namespace ZappaQuest
+{
+	class ZappaQuest
+	{
+		static void Main(string[] args)
+		{
+			GameInstance NewGame = new GameInstance();
+			NewGame.Initialize();
+		}
+	}
+}
