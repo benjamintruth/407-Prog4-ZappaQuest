@@ -4,21 +4,19 @@ namespace ZappaQuest {
 
 public class Item {
     // Type and Description are String
-    public string Name {get; set;}
     public string Description {get; set;}
     // Have a boolean to check if item is magical or not
     public bool IsMagical {get; set;}
 
-    public Item(string name, string description, bool isMagical=false) {
-        Name = name;
+    public Item(string description, bool isMagical=false) {
         Description = description;
         IsMagical = isMagical;
     } 
 
-    public virtual void Use() {
-        Console.WriteLine($"Using {Name}: {Description}");
+    public virtual string Information() {
+        return $"Item: {Description}, Magical: {IsMagical}";
     }
-   
+      
 } // End Item Class
 
 // Subclasses: Weapon, Armor, Treasure, Consumable(Food), Magic Items
@@ -29,17 +27,15 @@ public class Weapon : Item {
     public int MaxDamage {get; set;}
     public bool IsRemovable{get; set;}
 
-    public Weapon(string name, string description, bool isMagical, int attacksPerTurn, int maxDamage, bool isRemovable)
-    : base(name, description, isMagical) {
+    public Weapon(string description, bool isMagical, int attacksPerTurn, int maxDamage, bool isRemovable)
+    : base(description, isMagical) {
         NumAttacksPerTurn = attacksPerTurn;
         MaxDamage = maxDamage;
         IsRemovable = isRemovable;
     }
 
-    public override void Use() {
-        Random gen = new Random();
-        int damage = gen.Next(1, MaxDamage + 1);
-        Console.WriteLine($"{Name} attacks with {damage} damage!");
+    public override string Information() {
+        return $"Weapon: {Description}, Attacks: {NumAttacksPerTurn}, Max damage: {MaxDamage}, Removable? {IsRemovable}";
     }
 
     public int CompareTo(Weapon other) {
@@ -54,15 +50,16 @@ public class Armor : Item {
     public int ProtectValue {get; set;}
     public bool IsRemovable {get; set;}
 
-    public Armor(string name, string description, bool isMagical, int protectValue, bool isRemovable) 
-    : base(name, description, isMagical) {
+    public Armor(string description, bool isMagical, int protectValue, bool isRemovable) 
+    : base(description, isMagical) {
         ProtectValue = protectValue;
         IsRemovable = isRemovable;
     }
 
-    public override void Use() {
-        Console.WriteLine($"{Name} has {ProtectValue} protection for creature.");
+    public override string Information() {
+        return $"Armor: {Description}, Protection Available: {ProtectValue}, Removable? {IsRemovable}";
     }
+
 } // End Armor Subclass 
 
 // Treasure Subclass
@@ -70,46 +67,45 @@ public class Treasure : Item {
     // Treasure : Contians int value 
     public int Value {get; set;}
 
-    public Treasure(string name, string description, bool isMagical, int value) 
-    : base(name, description, isMagical) {
+    public Treasure(string description, bool isMagical, int value) 
+    : base(description, isMagical) {
         Value = value;
     }
 
-    public override void Use() {
-        Console.WriteLine($"{Name} is a treasure worth {Value} Zappa tickets.");
-        Console.WriteLine("Take it, don't worry about how it works (;");
+    public override string Information() {
+        return $"Treasure: {Description}, Value: {Value}";
     }
+
 } // End Treasure Subclass 
 
 // Food Subclass
-public class Consumable : Item {
+public class Food : Item {
     // Food: Has maximum value so when eaten, will heal User at random amount up to that value
-    public int Food {get; set;}
+    public int Consumable {get; set;}
 
-    public Consumable(string name, string description, bool isMagical, int food)
-    : base(name, description, isMagical) {
-        Food = food;
+    public Food(string description, bool isMagical, int consumable)
+    : base(description, isMagical) {
+        Consumable = consumable;
     }
 
-    public override void Use() {
-        Random gen = new Random();
-        int healingAmt = gen.Next(1, Food + 1);
-        Console.WriteLine($"{Name} heals you up to {healingAmt} points");
+    public override string Information() {
+        return $"Food/Consumable: {Description}, Maxmimum Healing: {Consumable}";
     }
-} // End Consumable Subclass 
+
+} // End Food Subclass 
 
 public class MagicItem : Item {
     public int JazzPower {get; set;}
 
-    public MagicItem(string name, string description, int jazzPower)
-    : base(name, description, true) {
+    public MagicItem(string description, int jazzPower)
+    : base(description, true) {
         JazzPower = jazzPower;
     }
-    public override void Use() {
-        Random gen = new Random();
-        int magicHealing = gen.Next(1, JazzPower + 1);
-        Console.WriteLine($"You use {Name}, healing {magicHealing} of jazz power");
+
+    public override string Information() {
+        return $"Magic Item: {Description}, Power: {JazzPower}";
     }
+
 } // End MagicItem Subclass
 
-}
+} // end ZappaQuest
