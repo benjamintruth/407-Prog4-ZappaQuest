@@ -1,0 +1,3 @@
+# this ensures we aren't pushing up our buildfiles any longer.
+ZappaQuest/bin/
+ZappaQuest/obj/
