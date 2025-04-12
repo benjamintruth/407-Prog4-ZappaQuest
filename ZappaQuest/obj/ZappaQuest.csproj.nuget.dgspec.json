@@ -1,24 +1,27 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Xipetotec\\Documents\\code\\repos\\school\\CSC407\\CSC-407-prog4-ZappaQuest\\ZappaQuest\\ZappaQuest.csproj": {}
+    "C:\\Users\\cutep\\OneDrive\\Documents\\CSC407\\407-Prog4-ZappaQuest\\ZappaQuest\\ZappaQuest.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Xipetotec\\Documents\\code\\repos\\school\\CSC407\\CSC-407-prog4-ZappaQuest\\ZappaQuest\\ZappaQuest.csproj": {
+    "C:\\Users\\cutep\\OneDrive\\Documents\\CSC407\\407-Prog4-ZappaQuest\\ZappaQuest\\ZappaQuest.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Xipetotec\\Documents\\code\\repos\\school\\CSC407\\CSC-407-prog4-ZappaQuest\\ZappaQuest\\ZappaQuest.csproj",
+        "projectUniqueName": "C:\\Users\\cutep\\OneDrive\\Documents\\CSC407\\407-Prog4-ZappaQuest\\ZappaQuest\\ZappaQuest.csproj",
         "projectName": "ZappaQuest",
-        "projectPath": "C:\\Users\\Xipetotec\\Documents\\code\\repos\\school\\CSC407\\CSC-407-prog4-ZappaQuest\\ZappaQuest\\ZappaQuest.csproj",
-        "packagesPath": "C:\\Users\\Xipetotec\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Xipetotec\\Documents\\code\\repos\\school\\CSC407\\CSC-407-prog4-ZappaQuest\\ZappaQuest\\obj\\",
+        "projectPath": "C:\\Users\\cutep\\OneDrive\\Documents\\CSC407\\407-Prog4-ZappaQuest\\ZappaQuest\\ZappaQuest.csproj",
+        "packagesPath": "C:\\Users\\cutep\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\cutep\\OneDrive\\Documents\\CSC407\\407-Prog4-ZappaQuest\\ZappaQuest\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Xipetotec\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\cutep\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
         ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
         "frameworks": {
           "net9.0": {
             "targetAlias": "net9.0",
@@ -56,7 +59,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.202/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

@@ -24,6 +24,14 @@ namespace ZappaQuest
 			// create a number of rooms based on difficulty level
 			Room[] Dungeon = BuildRooms(DifficultyLevel * 2);
 
+			List<Item> items = GenerateItems();
+			Random gen = new Random();
+
+			// loop through items and place them randomly in rooms
+			foreach (var item in items) {
+				Room targetR = Dungeon[gen.Next(Dungeon.Length)];
+				targetR.ItemsRoom.Add(item);
+			}
 			// loop through dungeon, printing exits, description, etc
 			foreach (var room in Dungeon)
 			{
@@ -89,6 +97,8 @@ namespace ZappaQuest
 			Console.WriteLine("It's time to be Frank. Let's play ZAPPA QUEST!.");
 			return PlayerData;
 		}
+
+
 
 		public static Room[] BuildRooms(int maxRooms)
 		{
@@ -166,6 +176,22 @@ namespace ZappaQuest
 			return rooms;
 		}
 
+		// Items List 
+		private List<Item> GenerateItems() {
+			return new List<Item> {
+				new Weapon("Stink Foot’s Heavy Guitar", false, 2, 25, true),
+				new Armor("Goblin Girl Suit", false, 12, true),
+				new Treasure("Black Napkin", false, 50),
+				new Food("Peaches En Regalia Smoothie", false, 24),
+				new MagicItem("Joe's Garage Glitter Amulet", 77),
+				new Weapon("Valley Girl Microphone", false, 3, 13, true),
+				new Armor("Cosmic Debris Chest Armor", false, 8, true),
+				new Treasure("Apostrophe' Shiny Vinyl", false, 70),
+				new Food("Muffin from Reasearch Laboratory", false, 20),
+				new MagicItem("Yellow Frozen Snow Cone", 50),
+				new Food("Easter Hay Watermelon", false, 50)
+			};
+		}
 
 
 		// end class

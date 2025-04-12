@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ZappaQuest")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+75403faa3f097c2c34caeb0d882d7ee4b990ab00")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8d691496978c56eaec674e20f3c33a6d0f620290")]
 [assembly: System.Reflection.AssemblyProductAttribute("ZappaQuest")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ZappaQuest")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
