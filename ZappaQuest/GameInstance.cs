@@ -25,15 +25,12 @@ namespace ZappaQuest
 			// create a number of rooms based on difficulty level
 			Room[] Dungeon = BuildRooms(DifficultyLevel * 2);
 
-			List<Item> items = GenerateItems();
-			Random gen = new Random();
+			// generate loot and add as drops
+			AddLootToDungeon(Dungeon);
 
-			// loop through items and place them randomly in rooms
-			foreach (var item in items)
-			{
-				Room targetR = Dungeon[gen.Next(Dungeon.Length)];
-				targetR.ItemsRoom.Add(item);
-			}
+
+
+			// DEV
 			// loop through dungeon, printing exits, description, etc
 			foreach (var room in Dungeon)
 			{
@@ -48,7 +45,6 @@ namespace ZappaQuest
 			// build room array
 			while (!GAME_OVER)
 			{
-
 				// main game loop ( LOOP = TURN )
 
 
@@ -92,7 +88,7 @@ namespace ZappaQuest
 			}
 
 			Console.WriteLine($"Your difficulty level is: {PlayerData[1]}. ");
-			Console.WriteLine("It's time to be Frank. Let's play ZAPPA QUEST!.");
+			Console.WriteLine("\nIt's time to be Frank. Let's play ZAPPA QUEST!\n");
 			return PlayerData;
 		}
 
@@ -111,36 +107,19 @@ namespace ZappaQuest
 			// create all rooms with basic info
 			for (int i = 0; i < maxRooms; i++)
 			{
-
-				// DEV: 
-				Console.WriteLine($"Building room {i}");
-
-				string roomName = $"Room {i + 1}";
-				string roomDescription = $"This is room number {i + 1}.";
-
-				Boolean isSideRoom = (i % 3 == 0);
 				Boolean isFirstRoom = (i == 0);
+				Boolean isSideRoom = (i % 3 == 0) && !isFirstRoom;
 				Boolean isLastRoom = (i + 1 == maxRooms);
 
-				// special name and description for side rooms (every third room)
-				if (isSideRoom && !isFirstRoom)
-				{
-					roomName = $"Side Room for {rooms[i - 1].Name}";
-					roomDescription = $"This is a side room connected to {rooms[i - 1].Name}. It is also room {i + 1}.";
-				}
 				// isLastRoom passed into isDungeonExit so that lastRoom is exit
+				rooms[i] = new Room(isSideRoom, isLastRoom, new Room[4]);
 				// 4 possible exits: North, East, South, West. 
 				// The indices in the exits array do not correspond to specific cardinal directions, as rooms can be 'rotated' 
-				rooms[i] = new Room(roomName, roomDescription, isLastRoom, new Room[4]);
 			}
 
 			// add exits
 			for (int i = 0; i < maxRooms; i++)
 			{
-
-				// DEV
-				Console.WriteLine($"Adding exits to room {i}");
-
 				Boolean isThisFirstRoom = i == 0;
 				Boolean isThisSecondRoom = i == 1;
 				// first room cannot be a side room bc a side room must be ahead of the room it connects to
@@ -212,6 +191,37 @@ namespace ZappaQuest
 				new MagicItem("Yellow Frozen Snow Cone", 50),
 				new Food("Easter Hay Watermelon", false, 50)
 			};
+		}
+
+		private void AddLootToDungeon(Room[] Dungeon)
+		{
+			List<Item> items = GenerateItems();
+			Random gen = new Random();
+
+			// loop through rooms with a random chance to add an item
+			foreach (var Room in Dungeon)
+			{
+
+				// bonus rooms are guaranteed to have one item
+				if (Room.IsBonusRoom)
+				{
+					Room.ItemsRoom.Add(items[gen.Next(items.Count)]);
+					// double normal drop rate chance for a bonus item
+					if (gen.NextDouble() < 0.6)
+					{
+						Room.ItemsRoom.Add(items[gen.Next(items.Count)]);
+					}
+				}
+				else
+				{
+					// 30% base chance to add item
+					if (gen.NextDouble() < 0.3)
+					{
+						Room.ItemsRoom.Add(items[gen.Next(items.Count)]);
+					}
+				}
+
+			}
 		}
 
 
