@@ -1,3 +1,5 @@
+using System.Threading.Tasks.Dataflow;
+
 namespace ZappaQuest
 {
 	public class GameInstance
@@ -11,7 +13,6 @@ namespace ZappaQuest
 		{
 			Console.WriteLine("WELCOME 2 ZAPPA QUEST!");
 			PlayerData = GreetPlayer();
-
 
 			RunGame();
 		}
@@ -28,7 +29,8 @@ namespace ZappaQuest
 			Random gen = new Random();
 
 			// loop through items and place them randomly in rooms
-			foreach (var item in items) {
+			foreach (var item in items)
+			{
 				Room targetR = Dungeon[gen.Next(Dungeon.Length)];
 				targetR.ItemsRoom.Add(item);
 			}
@@ -36,11 +38,7 @@ namespace ZappaQuest
 			foreach (var room in Dungeon)
 			{
 				room.PrintRoomDescription();
-
 			}
-
-
-
 
 
 			// create player creature (Frank)
@@ -113,63 +111,85 @@ namespace ZappaQuest
 			// create all rooms with basic info
 			for (int i = 0; i < maxRooms; i++)
 			{
+
+				// DEV: 
+				Console.WriteLine($"Building room {i}");
+
 				string roomName = $"Room {i + 1}";
 				string roomDescription = $"This is room number {i + 1}.";
 
-				// special name and description for side rooms (every third room)
-				if ((i + 1) % 3 == 0)
-				{
-					roomName = $"Side Room for room {(i)}";
-					roomDescription = $"This is a side room connected to the main path. Side room for room {(i)}.";
-				}
+				Boolean isSideRoom = (i % 3 == 0);
+				Boolean isFirstRoom = (i == 0);
+				Boolean isLastRoom = (i + 1 == maxRooms);
 
-				rooms[i] = new Room(roomName, roomDescription, new Room[4]); // 4 possible exits: North, East, South, West
+				// special name and description for side rooms (every third room)
+				if (isSideRoom && !isFirstRoom)
+				{
+					roomName = $"Side Room for {rooms[i - 1].Name}";
+					roomDescription = $"This is a side room connected to {rooms[i - 1].Name}. It is also room {i + 1}.";
+				}
+				// isLastRoom passed into isDungeonExit so that lastRoom is exit
+				// 4 possible exits: North, East, South, West. 
+				// The indices in the exits array do not correspond to specific cardinal directions, as rooms can be 'rotated' 
+				rooms[i] = new Room(roomName, roomDescription, isLastRoom, new Room[4]);
 			}
 
 			// add exits
 			for (int i = 0; i < maxRooms; i++)
 			{
+
+				// DEV
+				Console.WriteLine($"Adding exits to room {i}");
+
+				Boolean isThisFirstRoom = i == 0;
+				Boolean isThisSecondRoom = i == 1;
+				// first room cannot be a side room bc a side room must be ahead of the room it connects to
+				Boolean isSideRoom = (i) % 3 == 0 && !isThisFirstRoom;
+				Boolean isThisLastRoom = i + 1 == maxRooms;
+				Boolean isNextRoomSideRoom = (i + 1) % 3 == 0;
+				// next in spot in the array plus one for the floor 0 conversion 
+				Boolean isPreviousRoomSideRoom = (i - 1) % 3 == 0 && !(isThisFirstRoom || isThisSecondRoom);
+				// two ahead plus one additional to convert from the floor being 0
+				Boolean RoomAfterNextRoomExists = !(i + 3 > maxRooms);
+
 				// main path rooms 
-				if ((i + 1) % 3 != 0)
+				if (!isSideRoom)
 				{
-
-
-
-					// connect to next room (North)
-					if (i < maxRooms - 1)
+					// connect to next room (North) if available
+					if (!isThisLastRoom)
 					{
+						// add first room in array ( could be main path room or side room, add either way)
+						rooms[i].Exits[0] = rooms[i + 1];
 
-						// if next room is a side room, jump one ahead
-						if (i + 1 < maxRooms && (i + 2) % 3 == 0)
+						// if next room is a side room, add the room ahead of the side room to function as the north room for that 'branch'
+						if (isNextRoomSideRoom)
 						{
-							rooms[i].Exits[0] = rooms[i + 2];
-						}
-						else
-						{
-							rooms[i].Exits[1] = rooms[i + 1];
+							// ensure that the last room isn't a side room, that there is a room after the upcoming side room
+							if (RoomAfterNextRoomExists)
+							{
+								rooms[i].Exits[1] = rooms[i + 2];
+							}
 						}
 					}
 
 					// connect to previous room (South)
-					if (i > 0)
+					if (!isThisFirstRoom)
 					{
-						rooms[i].Exits[3] = rooms[i - 1];
-					}
-
-					// if this is the room before a side room, connect to side room (East)
-					if (i + 1 < maxRooms && (i + 2) % 3 == 0)
-					{
-						rooms[i].Exits[0] = rooms[i + 1];
+						// if previous room is a side room, go back two
+						if (isPreviousRoomSideRoom)
+						{
+							rooms[i].Exits[3] = rooms[i - 2];
+						}
+						else
+						{
+							rooms[i].Exits[3] = rooms[i - 1];
+						}
 					}
 				}
-				// if side room
+				// if side room, connect back to the main path (West)
 				else
 				{
-					// connect back to the main path (West)
-					if (i > 0)
-					{
-						rooms[i].Exits[2] = rooms[i - 1];
-					}
+					rooms[i].Exits[0] = rooms[i - 1];
 				}
 			}
 
@@ -177,7 +197,8 @@ namespace ZappaQuest
 		}
 
 		// Items List 
-		private List<Item> GenerateItems() {
+		private List<Item> GenerateItems()
+		{
 			return new List<Item> {
 				new Weapon("Stink Foot’s Heavy Guitar", false, 2, 25, true),
 				new Armor("Goblin Girl Suit", false, 12, true),
