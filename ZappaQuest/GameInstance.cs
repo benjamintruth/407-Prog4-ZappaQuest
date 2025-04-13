@@ -8,8 +8,10 @@ namespace ZappaQuest
 
 		public Boolean GAME_OVER = false;
 		public String[] PlayerData = new String[2];
+        //whether it's already displayed "(press any key to stop)"
+        public bool LearnedDice = false;
 
-		public void Initialize()
+        public void Initialize()
 		{
 			Console.WriteLine("WELCOME 2 ZAPPA QUEST!");
 			PlayerData = GreetPlayer();
@@ -254,6 +256,44 @@ namespace ZappaQuest
 			}
 		}
 
-		// end class
-	}
+        //roll a "die" and have the user time the outcome
+        public int DiceRoll(string Prompt, int Max = 20)
+        {
+            //remove any pending keys
+            while (Console.KeyAvailable)
+                Console.ReadKey(intercept: true);
+
+            //create a random order of numbers
+            Random Random = new Random();
+            Range.EndAt(20);
+            int[] RandomWheel = Enumerable.Range(1, Max).ToArray();
+            Random.Shuffle(RandomWheel);
+            int RandomPos = 0;
+
+            //say what it's rolling for
+            if (LearnedDice)
+            {
+                Console.WriteLine($"Rolling for {Prompt}: \n");
+            }
+            else
+            {
+                Console.WriteLine($"Rolling for {Prompt}: (press any key to stop) \n");
+                LearnedDice = true;
+            }
+
+            //cycle until the user presses a key
+            while (!Console.KeyAvailable)
+            {
+                RandomPos = (RandomPos + 1) % 20;
+                Console.SetCursorPosition(0, Console.CursorTop - 1);
+                Console.WriteLine($"> {RandomWheel[RandomPos],-2} <");
+                Task.Delay(150).Wait();
+            }
+            Console.ReadKey(intercept: true);
+
+            return RandomWheel[RandomPos];
+        }
+
+        // end class
+    }
 }
