@@ -37,6 +37,35 @@ namespace ZappaQuest
 		{
 			Health -= amount;
 		}
+
+		//attack, returns true if the opponent dies
+		public bool attack(Creature opponent)
+		{
+            //attack a certain number of times based on the weapon
+            for (int i = 0; i < EquippedWeapon.NumAttacksPerTurn; i++)
+            {
+                //roll a die for power
+                int HitChance = CurrentGame.DiceRoll($"{Name}'s {EquippedWeapon.Description} attack");
+                if (HitChance > opponent.EquippedArmor.ProtectValue)
+                {
+                    Random HitPowerRandomizer = new Random();
+                    int HitPower = EquippedWeapon.MaxDamage / HitPowerRandomizer.Next(1, (int)(20 / HitChance));
+                    opponent.takesDamage(HitPower);
+                    Console.WriteLine($"{Name} hit {opponent.Name} and dealt {HitPower} Damage!");
+                }
+                else
+                {
+                    Console.WriteLine($"{opponent.Name}'s {opponent.EquippedArmor.Description} blocked it!");
+                }
+
+				if (!opponent.isAlive())
+				{
+                    Console.WriteLine($"{Name} defeated {opponent.Name}!");
+                    return true;
+                }
+            }
+			return false;
+        }
     }
 
 	// special subclass for player character
@@ -57,61 +86,37 @@ namespace ZappaQuest
 			Inventory = new List<Item>();
 		}
 
-        //fighting (needs work)
+        //fighting
         public void fight(Creature opponent)
         {
-			while (!CurrentGame.GAME_OVER) 
+			while (true) 
 			{
-				//attack a certain number of times based on the weapon
-				for (int i = 0; i < EquippedWeapon.NumAttacksPerTurn; i++)
+                //attack the monster, attack() returns if they died
+                if (attack(opponent))
 				{
-					//roll a die for power
-					int HitChance = CurrentGame.DiceRoll($"{Name}'s {EquippedWeapon.Description} attack");
-					if (HitChance > opponent.EquippedArmor.ProtectValue)
-					{
-						Random HitPowerRandomizer = new Random();
-						int HitPower = EquippedWeapon.MaxDamage / HitPowerRandomizer.Next(1, (int)20 / HitChance);
-						opponent.takesDamage(HitPower);
-						Console.WriteLine($"{Name} hit {opponent.Name} and dealt ");
-					}
-					else
-					{
-						Console.WriteLine($"{opponent.Name}'s {opponent.EquippedArmor.Description} blocked it!");
-					}
-				}
-				if (!opponent.isAlive())
-				{
-					Console.WriteLine($"{Name} defeated {opponent.Name}!");
 					stealFrom(opponent);
 					return;
 				}
-
-				//attack a certain number of times based on the weapon
-				for (int i = 0; i < opponent.EquippedWeapon.NumAttacksPerTurn; i++)
+				//monster attacks you
+				else if (opponent.attack(this))
 				{
-					//roll a die for power
-					int HitChance = CurrentGame.DiceRoll($"{opponent.Name}'s {opponent.EquippedWeapon.Description} attack");
-					if (HitChance > EquippedArmor.ProtectValue)
-					{
-						Random HitPowerRandomizer = new Random();
-						int HitPower = opponent.EquippedWeapon.MaxDamage / HitPowerRandomizer.Next(1, (int)20 / HitChance);
-						takesDamage(HitPower);
-						Console.WriteLine($"{opponent.Name} hit {Name} and dealt ");
-					}
-					else
-					{
-						Console.WriteLine($"{Name}'s {EquippedArmor.Description} blocked it!");
-					}
-				}
-
-				if (!isAlive())
-				{
-					Console.WriteLine($"{opponent.Name} defeated {Name}!");
 					CurrentGame.GAME_OVER = true;
 					return;
 				}
 			}
+        }
 
+        private void judgeStealing(Item choice, Item reject = null, Item choice2, Item reject2 = null)
+        {
+            if (choice2 is not null and choice2.CompareTo(reject2) == -1)
+                judgeStealing(choice, reject)
+			else
+			{
+                if (choice.CompareTo(reject) == -1)
+                    Console.WriteLine("Maybe not the best choice");
+                else
+                    Console.WriteLine("Probably a good idea");
+            }
         }
 
 		public bool PickUpItem(Item item) {
@@ -138,35 +143,21 @@ namespace ZappaQuest
 				//take weapon
 				if (choice == "1")
 				{
-					EquippedWeapon = opponent.EquippedWeapon;
                     Console.WriteLine($"You took the {opponent.EquippedWeapon.Description}.");
-
-					//todo: replace judging with a function probably
-                    if (EquippedWeapon.CompareTo(opponent.EquippedWeapon) == 1)
-                        Console.WriteLine("Probably a good idea");
-                    else
-                        Console.WriteLine("Maybe not the best choice");
+					judgeStealing(opponent.EquippedWeapon, EquippedWeapon);
+                    EquippedWeapon = opponent.EquippedWeapon;
                 }
                 //take armor
                 else if (choice == "2")
 				{
-					EquippedArmor = opponent.EquippedArmor;
 					Console.WriteLine($"You took the {opponent.EquippedArmor.Description}.");
-
-                    //todo: replace judging with a function probably
-                    if (EquippedArmor.CompareTo(opponent.EquippedArmor) == 1)
-                        Console.WriteLine("Probably a good idea");
-                    else
-                        Console.WriteLine("Maybe not the best choice");
+					judgeStealing(opponent.EquippedArmor, EquippedArmor);
+                    EquippedArmor = opponent.EquippedArmor;
                 }
                 //take neither
                 else if (choice == "3")
 				{
-                    //todo: replace judging with a function probably
-                    if (EquippedWeapon.CompareTo(opponent.EquippedWeapon) < 1 && EquippedArmor.CompareTo(opponent.EquippedArmor) < 1)
-						Console.WriteLine("Probably a good idea");
-					else
-						Console.WriteLine("Maybe not the best choice");
+					judgeStealing(EquippedWeapon, opponent.EquippedWeapon, EquippedArmor, opponent.EquippedArmor);
 				}
 
 			//only weapon is stealable
@@ -182,21 +173,14 @@ namespace ZappaQuest
 
 				if (choice == "1")
 				{
-					EquippedWeapon = opponent.EquippedWeapon;
                     Console.WriteLine($"You took the {opponent.EquippedWeapon.Description}.");
-
-                    if (EquippedWeapon.CompareTo(opponent.EquippedWeapon) == 1)
-                        Console.WriteLine("Probably a good idea");
-                    else
-                        Console.WriteLine("Maybe not the best choice");
+                    judgeStealing(opponent.EquippedWeapon, EquippedWeapon);
+					EquippedWeapon = opponent.EquippedWeapon;
                 }
 				else if (choice == "2")
-				{
-					if (EquippedWeapon.CompareTo(opponent.EquippedWeapon) < 1)
-						Console.WriteLine("Probably a good idea");
-					else
-						Console.WriteLine("Maybe not the best choice");
-				}
+                {
+                    judgeStealing(EquippedWeapon, opponent.EquippedWeapon);
+                }
 			}
 
 			//only armor is stealable
@@ -211,22 +195,14 @@ namespace ZappaQuest
 
 				if (choice == "1")
 				{
-					EquippedArmor = opponent.EquippedArmor;
                     Console.WriteLine($"You took the {opponent.EquippedArmor.Description}.");
-
-                    //todo: replace judging with a function probably
-                    if (EquippedArmor.CompareTo(opponent.EquippedArmor) == 1)
-                        Console.WriteLine("Probably a good idea");
-                    else
-                        Console.WriteLine("Maybe not the best choice");
+                    judgeStealing(opponent.EquippedArmor, EquippedArmor);
+					EquippedArmor = opponent.EquippedArmor;
                 }
 				else if (choice == "2")
-				{
-					if (EquippedArmor.CompareTo(opponent.EquippedArmor) < 1)
-						Console.WriteLine("Probably a good idea");
-					else
-						Console.WriteLine("Maybe not the best choice");
-				}
+                {
+                    judgeStealing(EquippedArmor, opponent.EquippedArmor);
+                }
 			}
 			//can't take anything
 			else
