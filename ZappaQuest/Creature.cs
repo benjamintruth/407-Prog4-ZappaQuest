@@ -60,29 +60,58 @@ namespace ZappaQuest
         //fighting (needs work)
         public void fight(Creature opponent)
         {
-            //attack a certain number of times based on the weapon
-            for (int i = 0; i < EquippedWeapon.NumAttacksPerTurn; i++)
-            {
-                //roll a die for power
-                int HitChance = CurrentGame.DiceRoll($"{Name}'s {EquippedWeapon.Description} attack");
-                if (HitChance > opponent.EquippedArmor.ProtectValue)
-                {
-                    Random HitPowerRandomizer = new Random();
-                    int HitPower = EquippedWeapon.MaxDamage / HitPowerRandomizer.Next(1, (int)20 / HitChance);
-                    opponent.takesDamage(HitPower);
-                    Console.WriteLine($"{Name} hit {opponent.Name} and dealt ");
-                }
-                else
-                {
-                    Console.WriteLine($"{opponent.Name}'s {opponent.EquippedArmor.Description} blocked it!");
-                }
-            }
-            if (!opponent.isAlive())
-            {
-                Console.WriteLine($"{Name} defeated {opponent.Name}!");
-                stealFrom(opponent);
-                return;
-            }
+			while (!CurrentGame.GAME_OVER) 
+			{
+				//attack a certain number of times based on the weapon
+				for (int i = 0; i < EquippedWeapon.NumAttacksPerTurn; i++)
+				{
+					//roll a die for power
+					int HitChance = CurrentGame.DiceRoll($"{Name}'s {EquippedWeapon.Description} attack");
+					if (HitChance > opponent.EquippedArmor.ProtectValue)
+					{
+						Random HitPowerRandomizer = new Random();
+						int HitPower = EquippedWeapon.MaxDamage / HitPowerRandomizer.Next(1, (int)20 / HitChance);
+						opponent.takesDamage(HitPower);
+						Console.WriteLine($"{Name} hit {opponent.Name} and dealt ");
+					}
+					else
+					{
+						Console.WriteLine($"{opponent.Name}'s {opponent.EquippedArmor.Description} blocked it!");
+					}
+				}
+				if (!opponent.isAlive())
+				{
+					Console.WriteLine($"{Name} defeated {opponent.Name}!");
+					stealFrom(opponent);
+					return;
+				}
+
+				//attack a certain number of times based on the weapon
+				for (int i = 0; i < opponent.EquippedWeapon.NumAttacksPerTurn; i++)
+				{
+					//roll a die for power
+					int HitChance = CurrentGame.DiceRoll($"{opponent.Name}'s {opponent.EquippedWeapon.Description} attack");
+					if (HitChance > EquippedArmor.ProtectValue)
+					{
+						Random HitPowerRandomizer = new Random();
+						int HitPower = opponent.EquippedWeapon.MaxDamage / HitPowerRandomizer.Next(1, (int)20 / HitChance);
+						takesDamage(HitPower);
+						Console.WriteLine($"{opponent.Name} hit {Name} and dealt ");
+					}
+					else
+					{
+						Console.WriteLine($"{Name}'s {EquippedArmor.Description} blocked it!");
+					}
+				}
+
+				if (!isAlive())
+				{
+					Console.WriteLine($"{opponent.Name} defeated {Name}!");
+					CurrentGame.GAME_OVER = true;
+					return;
+				}
+			}
+
         }
 
         private void stealFrom(Creature opponent)
