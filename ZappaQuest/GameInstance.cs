@@ -78,8 +78,8 @@ namespace ZappaQuest
 					{
 						// DEV
 						// TODO: item pickup
-						Console.WriteLine("Woopsie, can't do that yet.");
-
+						//Console.WriteLine("Woopsie, can't do that yet.");
+						currentRoom.PickUpItem(thePlayer);
 						// room.PickupItem ( print options with in for each, accept int, move item from room list to player list)
 					}
 					else

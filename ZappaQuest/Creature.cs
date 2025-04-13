@@ -114,6 +114,14 @@ namespace ZappaQuest
 
         }
 
+		public bool PickUpItem(Item item) {
+			if (Inventory.Count >= 10) {
+				return false;
+			}
+			Inventory.Add(item);
+			return true;
+		}
+
         private void stealFrom(Creature opponent)
 		{
 			//weapon and armor are both stealable

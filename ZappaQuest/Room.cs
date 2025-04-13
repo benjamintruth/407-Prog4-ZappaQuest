@@ -232,6 +232,46 @@ namespace ZappaQuest
 			}
 		}
 
+		// Picking up Items in Room 
+		public void PickUpItem(Frank player) {
+			// Check if there are no items in room player is in 
+			if (ItemsRoom.Count == 0) {
+				Console.WriteLine("Unfortunately, there are no items in this room to pick up");
+				return;
+			}
+
+			Console.WriteLine("Current Items in room:");
+			for (int i = 0; i < ItemsRoom.Count; i++) {
+				Console.WriteLine($"{i + 1}. {ItemsRoom[i].Information()}");
+			}
+
+			// Allow player to make choice, and accept int
+			Console.WriteLine("Please enter which item you want to pick up: ");
+			string choice = Console.ReadLine();
+
+			if (int.TryParse(choice, out int selection)) {
+				if (selection >= 1 && selection <= ItemsRoom.Count) {
+					Item selectItem = ItemsRoom[selection - 1];
+
+					// Add item to player inventory
+					bool addSuccess = player.PickUpItem(selectItem);
+					if (addSuccess) {
+						ItemsRoom.RemoveAt(selection - 1);
+						Console.WriteLine($"You have successfully picked up: {selectItem.Information()}");
+					}
+					else {
+						Console.WriteLine("inventory is full. You cannot pick up item.");
+					}
+				}
+				else {
+					Console.WriteLine("Invalid item number");
+				}
+			}
+			else {
+				Console.WriteLine("Sorry, I didn't get that. Please enter a number.");
+			}	
+		} // end PickUpItem Method
+
 		public void Navigate(Frank player)
 		{
 
