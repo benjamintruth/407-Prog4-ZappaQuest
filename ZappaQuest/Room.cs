@@ -13,6 +13,8 @@ namespace ZappaQuest
 
 		public bool IsBonusRoom { get; }
 
+		public int RoomIndex { get; set; }
+
 		// List of Items for each room Created
 		public List<Item> ItemsRoom { get; set; }
 

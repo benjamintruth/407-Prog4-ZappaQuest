@@ -28,19 +28,16 @@ namespace ZappaQuest
 			// generate loot and add as drops
 			AddLootToDungeon(Dungeon);
 
-
-
 			// DEV
 			// loop through dungeon, printing exits, description, etc
-			foreach (var room in Dungeon)
-			{
-				room.PrintRoomDescription();
-			}
+			// foreach (var room in Dungeon)
+			// {
+			// 	room.PrintRoomDescription();
+			// }
 
 
 			// create player creature (Frank)
-
-
+			Frank thePlayer = new Frank();
 
 			// build room array
 			while (!GAME_OVER)
@@ -91,8 +88,6 @@ namespace ZappaQuest
 			Console.WriteLine("\nIt's time to be Frank. Let's play ZAPPA QUEST!\n");
 			return PlayerData;
 		}
-
-
 
 		public static Room[] BuildRooms(int maxRooms)
 		{
@@ -224,7 +219,6 @@ namespace ZappaQuest
 
 			}
 		}
-
 
 		// end class
 	}
