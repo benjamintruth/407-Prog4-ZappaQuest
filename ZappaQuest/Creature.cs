@@ -107,7 +107,7 @@ namespace ZappaQuest
 			}
         }
 
-        private void judgeStealing(Item choice, Item reject = null, Item choice2, Item reject2 = null)
+        private void judgeStealing(Item choice, Item reject, Item choice2 = null, Item reject2 = null)
         {
             if (choice2 is not null and choice2.CompareTo(reject2) == -1)
                 judgeStealing(choice, reject)
