@@ -68,6 +68,7 @@ namespace ZappaQuest
         }
     }
 
+
 	// special subclass for player character
 	public class Frank : Creature
     {
