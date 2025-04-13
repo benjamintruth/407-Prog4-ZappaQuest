@@ -39,7 +39,7 @@ namespace ZappaQuest
 
 
 			// create player creature (Frank)
-			Frank thePlayer = new Frank();
+			Frank thePlayer = new Frank(this);
 
 			// build room array
 			while (!GAME_OVER)

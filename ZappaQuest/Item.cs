@@ -35,12 +35,12 @@ public class Weapon : Item {
     }
 
     public override string Information() {
-        return $"Weapon: {Description}, Attacks: {NumAttacksPerTurn}, Max damage: {MaxDamage}, Removable? {IsRemovable}";
+        return $"Weapon: {Description}, Attacks: {NumAttacksPerTurn}, Max damage: {MaxDamage}";
     }
 
     public int CompareTo(Weapon other) {
         if(other == null) return 1;
-        return this.MaxDamage.CompareTo(other.MaxDamage);
+        return (this.MaxDamage*NumAttacksPerTurn).CompareTo(other.MaxDamage*other.NumAttacksPerTurn);
     }
 } // End Wepapon Subclass
 
@@ -60,6 +60,11 @@ public class Armor : Item {
         return $"Armor: {Description}, Protection Available: {ProtectValue}, Removable? {IsRemovable}";
     }
 
+    public int CompareTo(Armor other)
+    {
+        if (other == null) return 1;
+        return this.ProtectValue.CompareTo(other.ProtectValue);
+    }
 } // End Armor Subclass 
 
 // Treasure Subclass
