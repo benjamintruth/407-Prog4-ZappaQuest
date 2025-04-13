@@ -65,6 +65,9 @@ namespace ZappaQuest
 					{
 						Console.WriteLine("2. TAKE ITEM");
 					}
+					if (thePlayer.Inventory.Count > 0) {
+						Console.WriteLine("3. DROP ITEM");
+					}
 					String initialTurnChoice = Console.ReadLine();
 
 					if (initialTurnChoice == "1")
@@ -81,6 +84,9 @@ namespace ZappaQuest
 						//Console.WriteLine("Woopsie, can't do that yet.");
 						currentRoom.PickUpItem(thePlayer);
 						// room.PickupItem ( print options with in for each, accept int, move item from room list to player list)
+					}
+					else if (initialTurnChoice == "3") {
+						currentRoom.DropItem(thePlayer);
 					}
 					else
 					{

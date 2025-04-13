@@ -281,6 +281,36 @@ namespace ZappaQuest
 			}
 		} // end PickUpItem Method
 
+		public void DropItem(Frank player) {
+			if (player.Inventory.Count == 0) {
+				Console.WriteLine("You do not have any items to drop.");
+				return;
+			}
+			// Display current items in player inventory to choose which to drop
+			Console.WriteLine("Current Items:");
+			for (int i=0; i < player.Inventory.Count; i++) {
+				Console.WriteLine($"{i+1}. {player.Inventory[i].Information()}");
+			}
+			// Ask player which item to drop
+			Console.WriteLine("Which item would you like to drop from inventory?");
+			Console.WriteLine("Be wise...");
+			string choice = Console.ReadLine();
+
+			if (int.TryParse(choice, out int selection)) {
+				if (selection >= 1 && selection <= player.Inventory.Count) {
+					Item selectItem = player.Inventory[selection - 1];
+					player.DropItem(selectItem);
+					ItemsRoom.Add(selectItem);
+				}
+				else {
+					Console.WriteLine("Invalid selection. Please try again.");
+				}
+			}
+			else {
+				Console.WriteLine("Sorry, I didn't get that. Please enter a valid number.");
+			}
+		}
+
 		public void Navigate(Frank player)
 		{
 

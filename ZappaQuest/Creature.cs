@@ -135,6 +135,17 @@ namespace ZappaQuest
 			return true;
 		}
 
+		public void DropItem(Item item) {
+			if (item == null) {
+				Console.WriteLine("There are no items to drop.");
+				return;
+			}
+			if (Inventory.Contains(item)) {
+				Inventory.Remove(item);
+				Console.WriteLine($"You have dropped: {item.Information()} from Inventory.");
+			}
+		}
+
 		private void stealFrom(Creature opponent)
 		{
 			//weapon and armor are both stealable
