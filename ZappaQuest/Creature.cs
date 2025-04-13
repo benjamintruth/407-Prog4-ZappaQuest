@@ -5,7 +5,7 @@ using System.Runtime.InteropServices.Swift;
 namespace ZappaQuest
 {
 
-	public class Creature
+	public abstract class Creature
 	{
 		// add all base creature attributes:
 		public string Name { get; }
@@ -109,15 +109,15 @@ namespace ZappaQuest
 
         private void judgeStealing(Item choice, Item reject, Item choice2 = null, Item reject2 = null)
         {
-            if (choice2 is not null and choice2.CompareTo(reject2) == -1)
-                judgeStealing(choice, reject)
+			if (choice2 is not null and choice2.CompareTo(reject2) == -1)
+				judgeStealing(choice, reject);
 			else
 			{
-                if (choice.CompareTo(reject) == -1)
-                    Console.WriteLine("Maybe not the best choice");
-                else
-                    Console.WriteLine("Probably a good idea");
-            }
+				if (choice.CompareTo(reject) == -1)
+					Console.WriteLine("Maybe not the best choice");
+				else
+					Console.WriteLine("Probably a good idea");
+			}
         }
 
 		public bool PickUpItem(Item item) {
@@ -214,4 +214,8 @@ namespace ZappaQuest
 		}
 	}
 
+	public class Monster : Creature
+	{
+
+	}
 }
