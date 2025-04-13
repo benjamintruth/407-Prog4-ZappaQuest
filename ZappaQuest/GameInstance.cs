@@ -210,7 +210,7 @@ namespace ZappaQuest
 		private List<Item> GenerateItems()
 		{
 			return new List<Item> {
-				new Weapon("Stink Foot’s Heavy Guitar", false, 2, 25, true),
+				new Weapon("Stink Foot's Heavy Guitar", false, 2, 25, true),
 				new Armor("Goblin Girl Suit", false, 12, true),
 				new Treasure("Black Napkin", false, 50),
 				new Food("Peaches En Regalia Smoothie", false, 24),
@@ -220,7 +220,16 @@ namespace ZappaQuest
 				new Treasure("Apostrophe' Shiny Vinyl", false, 70),
 				new Food("Muffin from Reasearch Laboratory", false, 20),
 				new MagicItem("Yellow Frozen Snow Cone", 50),
-				new Food("Easter Hay Watermelon", false, 50)
+				new Food("Easter Hay Watermelon", false, 50),
+				new Weapon("Zomby Woof Fangs", false, 4, 10, true),
+				new Armor("I'm The Slime Shield", false, 15, true),
+				new Treasure("FREAK OUT! Deluxe LP", true, 150),
+				new Food("Pojama People Pudding", true, 20),
+				new MagicItem("Uncle Remus Jazz Cube", 70),
+				new Weapon("Inca Roads Laser Beam", true, 1, 60, false),
+				new Armor("Plastic People Chestplate", false, 7, true),
+				new Treasure("We're Only in it For The Money Coins!", false, 90),
+				new Food("Call Any Vegetable Salad", false, 18)
 			};
 		}
 		// Add to Loot Section!!!!!!!!!!!!!
