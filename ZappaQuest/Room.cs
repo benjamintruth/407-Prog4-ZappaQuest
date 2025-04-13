@@ -9,7 +9,7 @@ namespace ZappaQuest
 		public string Description { get; }
 		public Room[] Exits { get; }
 
-		public Boolean IsDungeonExit { get; }
+		public bool IsDungeonExit { get; }
 
 		public bool IsBonusRoom { get; }
 
@@ -122,10 +122,10 @@ namespace ZappaQuest
 			}
 		};
 
-		public Room(int index, Boolean isSideRoom, Boolean isDungeonExit, Room[] exits)
+		public Room(int index, bool isSideRoom, bool isDungeonExit, Room[] exits)
 		{
 			// build room name and description
-			Boolean usedAllRoomDescriptions = RoomDescUsedCounter >= RoomNamesAndDescriptions.Length;
+			bool usedAllRoomDescriptions = RoomDescUsedCounter >= RoomNamesAndDescriptions.Length;
 			if (!usedAllRoomDescriptions)
 			{
 				RoomDescription currentRoomDescription = RoomNamesAndDescriptions[RoomDescUsedCounter];
@@ -233,15 +233,18 @@ namespace ZappaQuest
 		}
 
 		// Picking up Items in Room 
-		public void PickUpItem(Frank player) {
+		public void PickUpItem(Frank player)
+		{
 			// Check if there are no items in room player is in 
-			if (ItemsRoom.Count == 0) {
+			if (ItemsRoom.Count == 0)
+			{
 				Console.WriteLine("Unfortunately, there are no items in this room to pick up");
 				return;
 			}
 
 			Console.WriteLine("Current Items in room:");
-			for (int i = 0; i < ItemsRoom.Count; i++) {
+			for (int i = 0; i < ItemsRoom.Count; i++)
+			{
 				Console.WriteLine($"{i + 1}. {ItemsRoom[i].Information()}");
 			}
 
@@ -249,33 +252,39 @@ namespace ZappaQuest
 			Console.WriteLine("Please enter which item you want to pick up: ");
 			string choice = Console.ReadLine();
 
-			if (int.TryParse(choice, out int selection)) {
-				if (selection >= 1 && selection <= ItemsRoom.Count) {
+			if (int.TryParse(choice, out int selection))
+			{
+				if (selection >= 1 && selection <= ItemsRoom.Count)
+				{
 					Item selectItem = ItemsRoom[selection - 1];
 
 					// Add item to player inventory
 					bool addSuccess = player.PickUpItem(selectItem);
-					if (addSuccess) {
+					if (addSuccess)
+					{
 						ItemsRoom.RemoveAt(selection - 1);
 						Console.WriteLine($"You have successfully picked up: {selectItem.Information()}");
 					}
-					else {
+					else
+					{
 						Console.WriteLine("inventory is full. You cannot pick up item.");
 					}
 				}
-				else {
+				else
+				{
 					Console.WriteLine("Invalid item number");
 				}
 			}
-			else {
+			else
+			{
 				Console.WriteLine("Sorry, I didn't get that. Please enter a number.");
-			}	
+			}
 		} // end PickUpItem Method
 
 		public void Navigate(Frank player)
 		{
 
-			Boolean newRoomSelected = false;
+			bool newRoomSelected = false;
 			while (!newRoomSelected)
 			{
 
@@ -333,7 +342,7 @@ namespace ZappaQuest
 				int BackSelector = 0;
 				if (IsBonusRoom)
 				{
-					BackSelector = 1;
+					BackSelector = 2;
 				}
 				else if (Exits[1] == null)
 				{
@@ -346,19 +355,19 @@ namespace ZappaQuest
 				Console.WriteLine($"		{BackSelector}. BACK");
 
 				// query user
-				String exitSelection = Console.ReadLine();
+				int exitSelection = GameInstance.TakeInput(BackSelector);
 
 				// handle navigation differently based on room type
 				// bonus room, only can go back to main room or exit the move loop
 				if (IsBonusRoom)
 				{
-					if (exitSelection == "1")
+					if (exitSelection == 1)
 					{
 						// move frank's room index to the index of the exit
 						player.CurrentRoomIndex = Exits[0].RoomIndex;
 						newRoomSelected = true;
 					}
-					else if (exitSelection == "2")
+					else if (exitSelection == 2)
 					{
 						// break loop
 						newRoomSelected = true;
@@ -371,19 +380,19 @@ namespace ZappaQuest
 				// main north/south room, no side room
 				else if (Exits[1] == null)
 				{
-					if (exitSelection == "1")
+					if (exitSelection == 1)
 					{
 						// north travel
 						player.CurrentRoomIndex = Exits[0].RoomIndex;
 						newRoomSelected = true;
 					}
-					else if (exitSelection == "2")
+					else if (exitSelection == 2)
 					{
 						// south travel
 						player.CurrentRoomIndex = Exits[3].RoomIndex;
 						newRoomSelected = true;
 					}
-					else if (exitSelection == "3")
+					else if (exitSelection == 3)
 					{
 						// break loop
 						newRoomSelected = true;
@@ -396,25 +405,25 @@ namespace ZappaQuest
 				// room that do have side rooms, three options
 				else
 				{
-					if (exitSelection == "1")
+					if (exitSelection == 1)
 					{
 						// west travel
 						player.CurrentRoomIndex = Exits[0].RoomIndex;
 						newRoomSelected = true;
 					}
-					else if (exitSelection == "2")
+					else if (exitSelection == 2)
 					{
 						// north travel
 						player.CurrentRoomIndex = Exits[1].RoomIndex;
 						newRoomSelected = true;
 					}
-					else if (exitSelection == "3")
+					else if (exitSelection == 3)
 					{
 						// south travel
 						player.CurrentRoomIndex = Exits[3].RoomIndex;
 						newRoomSelected = true;
 					}
-					else if (exitSelection == "4")
+					else if (exitSelection == 4)
 					{
 						// break loop
 						newRoomSelected = true;

@@ -6,12 +6,12 @@ namespace ZappaQuest
 	{
 
 
-		public Boolean GAME_OVER = false;
+		public bool GAME_OVER = false;
 		public String[] PlayerData = new String[2];
-        //whether it's already displayed "(press any key to stop)"
-        public bool LearnedDice = false;
+		//whether it's already displayed "(press any key to stop)"
+		public bool LearnedDice = false;
 
-        public void Initialize()
+		public void Initialize()
 		{
 			Console.WriteLine("WELCOME 2 ZAPPA QUEST!");
 			PlayerData = GreetPlayer();
@@ -51,7 +51,7 @@ namespace ZappaQuest
 				currentRoom.PrintRoomDescription();
 
 				// create loop for actions in this room until we leave
-				Boolean inSameRoom = true;
+				bool inSameRoom = true;
 
 				while (inSameRoom)
 				{
@@ -138,9 +138,9 @@ namespace ZappaQuest
 			// create all rooms with basic info
 			for (int i = 0; i < maxRooms; i++)
 			{
-				Boolean isFirstRoom = (i == 0);
-				Boolean isSideRoom = (i % 3 == 0) && !isFirstRoom;
-				Boolean isLastRoom = (i + 1 == maxRooms);
+				bool isFirstRoom = (i == 0);
+				bool isSideRoom = (i % 3 == 0) && !isFirstRoom;
+				bool isLastRoom = (i + 1 == maxRooms);
 
 				// isLastRoom passed into isDungeonExit so that lastRoom is exit
 				rooms[i] = new Room(i, isSideRoom, isLastRoom, new Room[4]);
@@ -151,16 +151,16 @@ namespace ZappaQuest
 			// add exits
 			for (int i = 0; i < maxRooms; i++)
 			{
-				Boolean isThisFirstRoom = i == 0;
-				Boolean isThisSecondRoom = i == 1;
+				bool isThisFirstRoom = i == 0;
+				bool isThisSecondRoom = i == 1;
 				// first room cannot be a side room bc a side room must be ahead of the room it connects to
-				Boolean isSideRoom = (i) % 3 == 0 && !isThisFirstRoom;
-				Boolean isThisLastRoom = i + 1 == maxRooms;
-				Boolean isNextRoomSideRoom = (i + 1) % 3 == 0;
+				bool isSideRoom = (i) % 3 == 0 && !isThisFirstRoom;
+				bool isThisLastRoom = i + 1 == maxRooms;
+				bool isNextRoomSideRoom = (i + 1) % 3 == 0;
 				// next in spot in the array plus one for the floor 0 conversion 
-				Boolean isPreviousRoomSideRoom = (i - 1) % 3 == 0 && !(isThisFirstRoom || isThisSecondRoom);
+				bool isPreviousRoomSideRoom = (i - 1) % 3 == 0 && !(isThisFirstRoom || isThisSecondRoom);
 				// two ahead plus one additional to convert from the floor being 0
-				Boolean RoomAfterNextRoomExists = !(i + 3 > maxRooms);
+				bool RoomAfterNextRoomExists = !(i + 3 > maxRooms);
 
 				// main path rooms 
 				if (!isSideRoom)
@@ -232,7 +232,137 @@ namespace ZappaQuest
 				new Food("Call Any Vegetable Salad", false, 18)
 			};
 		}
-		// Add to Loot Section!!!!!!!!!!!!!
+
+		private List<Creature> GenerateCreatures()
+		{
+			List<Creature> CreatureList = new List<Creature> {
+		new Creature(
+			name: "Cosmic Debris",
+			description: "A swirling mass of psychedelic space junk that dances erratically",
+			health: 50,
+			equippedWeapon: new Weapon("Rock Hands", true, 1, 20, true),
+			equippedArmor: null,
+			currentGame: this
+		),
+		new Creature(
+			name: "Yellow Snow Leopard",
+			description: "A growling husky with suspiciously yellow-tinted fur",
+			health: 35,
+			equippedWeapon: new Weapon("Teeth", true, 1, 20, true),
+			equippedArmor: null,
+			currentGame: this
+		),
+		new Creature(
+			name: "Bobby Brown",
+			description: "A preppy antagonist with an inflated ego and questionable morals",
+			health: 45,
+			equippedWeapon: null,
+			equippedArmor: null,
+			currentGame: this
+		),
+		new Creature(
+			name: "Muffin Man",
+			description: "A deranged baker covered in flour with sinister intentions",
+			health: 40,
+			equippedWeapon: null,
+			equippedArmor: null,
+			currentGame: this
+		),
+		new Creature(
+			name: "Camarillo Brillo",
+			description: "A witch with hair that glows in the dark and mysterious powers",
+			health: 55,
+			equippedWeapon: null,
+			equippedArmor: null,
+			currentGame: this
+		),
+		new Creature(
+			name: "Hot Rat",
+			description: "A fiery rodent with jazz-influenced attack patterns",
+			health: 25,
+			equippedWeapon: null,
+			equippedArmor: null,
+			currentGame: this
+		),
+		new Creature(
+			name: "Montana Banana Farmer",
+			description: "A delusional agriculturist with a tiny horse and dental floss obsession",
+			health: 30,
+			equippedWeapon: null,
+			equippedArmor: null,
+			currentGame: this
+		),
+		new Creature(
+			name: "Duke Of Prunes",
+			description: "idk.. he's like a prune guy... he's big",
+			health: 60,
+			equippedWeapon: null,
+			equippedArmor: null,
+			currentGame: this
+		),
+		new Creature(
+			name: "Central Scrutinizer",
+			description: "A mechanical enforcer of social and musical conformity",
+			health: 70,
+			equippedWeapon: null,
+			equippedArmor: null,
+			currentGame: this
+		),
+		new Creature(
+			name: "Lumpy Gravy Beast",
+			description: "An amorphous blob of sentient, experimental musical arrangements",
+			health: 45,
+			equippedWeapon: null,
+			equippedArmor: null,
+			currentGame: this
+		),
+		new Creature(
+			name: "Zomby Woof",
+			description: "A reanimated canine with an impressive vocal range",
+			health: 50,
+			equippedWeapon: null,
+			equippedArmor: null,
+			currentGame: this
+		),
+		new Creature(
+			name: "Dirty Love Creature",
+			description: "A pungent entity seeking questionable relations with household appliances",
+			health: 35,
+			equippedWeapon: null,
+			equippedArmor: null,
+			currentGame: this
+		),
+		new Creature(
+			name: "Illinois Enema Bandit",
+			description: "A notorious criminal with unconventional methods and a distinctive laugh",
+			health: 45,
+			equippedWeapon: null,
+			equippedArmor: null,
+			currentGame: this
+		),
+		new Creature(
+			name: "Dinah-Moe Humm",
+			description: "A smug challenger who never loses her bizarre betting games",
+			health: 40,
+			equippedWeapon: null,
+			equippedArmor: null,
+			currentGame: this
+		),
+		new Creature(
+			name: "G-Spot Tornado",
+			description: "A whirling vortex of impossible rhythms and unplayable notation",
+			health: 65,
+			equippedWeapon: null,
+			equippedArmor: null,
+			currentGame: this
+		)
+	};
+
+			// add 3 random pieces of magical equipment to random monsters
+
+
+			return CreatureList;
+		}
 
 		private void AddLootToDungeon(Room[] Dungeon)
 		{
@@ -265,44 +395,55 @@ namespace ZappaQuest
 			}
 		}
 
-        //roll a "die" and have the user time the outcome
-        public int DiceRoll(string Prompt, int Max = 20)
-        {
-            //remove any pending keys
-            while (Console.KeyAvailable)
-                Console.ReadKey(intercept: true);
+		//roll a "die" and have the user time the outcome
+		public int DiceRoll(string Prompt, int Max = 20)
+		{
+			//remove any pending keys
+			while (Console.KeyAvailable)
+				Console.ReadKey(intercept: true);
 
-            //create a random order of numbers
-            Random Random = new Random();
-            Range.EndAt(20);
-            int[] RandomWheel = Enumerable.Range(1, Max).ToArray();
-            Random.Shuffle(RandomWheel);
-            int RandomPos = 0;
+			//create a random order of numbers
+			Random Random = new Random();
+			Range.EndAt(20);
+			int[] RandomWheel = Enumerable.Range(1, Max).ToArray();
+			Random.Shuffle(RandomWheel);
+			int RandomPos = 0;
 
-            //say what it's rolling for
-            if (LearnedDice)
-            {
-                Console.WriteLine($"Rolling for {Prompt}: \n");
-            }
-            else
-            {
-                Console.WriteLine($"Rolling for {Prompt}: (press any key to stop) \n");
-                LearnedDice = true;
-            }
+			//say what it's rolling for
+			if (LearnedDice)
+			{
+				Console.WriteLine($"Rolling for {Prompt}: \n");
+			}
+			else
+			{
+				Console.WriteLine($"Rolling for {Prompt}: (press any key to stop) \n");
+				LearnedDice = true;
+			}
 
-            //cycle until the user presses a key
-            while (!Console.KeyAvailable)
-            {
-                RandomPos = (RandomPos + 1) % 20;
-                Console.SetCursorPosition(0, Console.CursorTop - 1);
-                Console.WriteLine($"> {RandomWheel[RandomPos],-2} <");
-                Task.Delay(150).Wait();
-            }
-            Console.ReadKey(intercept: true);
+			//cycle until the user presses a key
+			while (!Console.KeyAvailable)
+			{
+				RandomPos = (RandomPos + 1) % 20;
+				Console.SetCursorPosition(0, Console.CursorTop - 1);
+				Console.WriteLine($"> {RandomWheel[RandomPos],-2} <");
+				Task.Delay(150).Wait();
+			}
+			Console.ReadKey(intercept: true);
 
-            return RandomWheel[RandomPos];
-        }
+			return RandomWheel[RandomPos];
+		}
 
-        // end class
-    }
+		public static int TakeInput(int max)
+		{
+			int input = int.Parse(Console.ReadKey().KeyChar.ToString());
+			while (input < 0 || input > max)
+			{
+				Console.WriteLine("Please enter a valud input");
+				input = Console.ReadKey().KeyChar - '0';
+			}
+			return input;
+		}
+
+		// end class
+	}
 }

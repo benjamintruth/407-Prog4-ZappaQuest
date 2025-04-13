@@ -5,17 +5,17 @@ using System.Runtime.InteropServices.Swift;
 namespace ZappaQuest
 {
 
-	public abstract class Creature
+	public class Creature
 	{
 		// add all base creature attributes:
 		public string Name { get; }
 		public string Description { get; }
 		public int Health { get; set; }
-        public int CurrentRoomIndex { get; set; }
+		public int CurrentRoomIndex { get; set; }
 		protected GameInstance CurrentGame;
 
 		// weapon and armor the creature is using
-        public Weapon EquippedWeapon;
+		public Weapon EquippedWeapon;
 		public Armor EquippedArmor;
 
 		public Creature(string name, string description, int health, Weapon equippedWeapon, Armor equippedArmor, GameInstance currentGame)
@@ -41,38 +41,38 @@ namespace ZappaQuest
 		//attack, returns true if the opponent dies
 		public bool attack(Creature opponent)
 		{
-            //attack a certain number of times based on the weapon
-            for (int i = 0; i < EquippedWeapon.NumAttacksPerTurn; i++)
-            {
-                //roll a die for power
-                int HitChance = CurrentGame.DiceRoll($"{Name}'s {EquippedWeapon.Description} attack");
-                if (HitChance > opponent.EquippedArmor.ProtectValue)
-                {
-                    Random HitPowerRandomizer = new Random();
-                    int HitPower = EquippedWeapon.MaxDamage / HitPowerRandomizer.Next(1, (int)(20 / HitChance));
-                    opponent.takesDamage(HitPower);
-                    Console.WriteLine($"{Name} hit {opponent.Name} and dealt {HitPower} Damage!");
-                }
-                else
-                {
-                    Console.WriteLine($"{opponent.Name}'s {opponent.EquippedArmor.Description} blocked it!");
-                }
+			//attack a certain number of times based on the weapon
+			for (int i = 0; i < EquippedWeapon.NumAttacksPerTurn; i++)
+			{
+				//roll a die for power
+				int HitChance = CurrentGame.DiceRoll($"{Name}'s {EquippedWeapon.Description} attack");
+				if (HitChance > opponent.EquippedArmor.ProtectValue)
+				{
+					Random HitPowerRandomizer = new Random();
+					int HitPower = EquippedWeapon.MaxDamage / HitPowerRandomizer.Next(1, (int)(20 / HitChance));
+					opponent.takesDamage(HitPower);
+					Console.WriteLine($"{Name} hit {opponent.Name} and dealt {HitPower} Damage!");
+				}
+				else
+				{
+					Console.WriteLine($"{opponent.Name}'s {opponent.EquippedArmor.Description} blocked it!");
+				}
 
 				if (!opponent.isAlive())
 				{
-                    Console.WriteLine($"{Name} defeated {opponent.Name}!");
-                    return true;
-                }
-            }
+					Console.WriteLine($"{Name} defeated {opponent.Name}!");
+					return true;
+				}
+			}
 			return false;
-        }
-    }
+		}
+	}
 
 
 	// special subclass for player character
 	public class Frank : Creature
-    {
-        public List<Item> Inventory { get; set; }
+	{
+		public List<Item> Inventory { get; set; }
 
 		public Frank(GameInstance currentGame) : base(
 			name: "Frank Zappa",
@@ -81,19 +81,19 @@ namespace ZappaQuest
 			equippedWeapon: new Weapon("hands", false, 1, 2, false),
 			equippedArmor: new Armor("skin", false, 0, false),
 			currentGame: currentGame
-        )
-        {
-            CurrentRoomIndex = 0;
+		)
+		{
+			CurrentRoomIndex = 0;
 			Inventory = new List<Item>();
 		}
 
-        //fighting
-        public void fight(Creature opponent)
-        {
-			while (true) 
+		//fighting
+		public void fight(Creature opponent)
+		{
+			while (true)
 			{
-                //attack the monster, attack() returns if they died
-                if (attack(opponent))
+				//attack the monster, attack() returns if they died
+				if (attack(opponent))
 				{
 					stealFrom(opponent);
 					return;
@@ -105,12 +105,17 @@ namespace ZappaQuest
 					return;
 				}
 			}
-        }
+		}
 
-        private void judgeStealing(Item choice, Item reject, Item choice2 = null, Item reject2 = null)
-        {
-			if (choice2 is not null and choice2.CompareTo(reject2) == -1)
-				judgeStealing(choice, reject);
+		private void judgeStealing(Item choice, Item reject, Item choice2 = null, Item reject2 = null)
+		{
+			if (choice2 is not null)
+			{
+				if (choice2.CompareTo(reject2) == -1)
+				{
+					judgeStealing(choice, reject);
+				}
+			}
 			else
 			{
 				if (choice.CompareTo(reject) == -1)
@@ -118,17 +123,19 @@ namespace ZappaQuest
 				else
 					Console.WriteLine("Probably a good idea");
 			}
-        }
+		}
 
-		public bool PickUpItem(Item item) {
-			if (Inventory.Count >= 10) {
+		public bool PickUpItem(Item item)
+		{
+			if (Inventory.Count >= 10)
+			{
 				return false;
 			}
 			Inventory.Add(item);
 			return true;
 		}
 
-        private void stealFrom(Creature opponent)
+		private void stealFrom(Creature opponent)
 		{
 			//weapon and armor are both stealable
 			if (opponent.EquippedWeapon.IsRemovable && opponent.EquippedArmor.IsRemovable)
@@ -144,24 +151,24 @@ namespace ZappaQuest
 				//take weapon
 				if (choice == "1")
 				{
-                    Console.WriteLine($"You took the {opponent.EquippedWeapon.Description}.");
+					Console.WriteLine($"You took the {opponent.EquippedWeapon.Description}.");
 					judgeStealing(opponent.EquippedWeapon, EquippedWeapon);
-                    EquippedWeapon = opponent.EquippedWeapon;
-                }
-                //take armor
-                else if (choice == "2")
+					EquippedWeapon = opponent.EquippedWeapon;
+				}
+				//take armor
+				else if (choice == "2")
 				{
 					Console.WriteLine($"You took the {opponent.EquippedArmor.Description}.");
 					judgeStealing(opponent.EquippedArmor, EquippedArmor);
-                    EquippedArmor = opponent.EquippedArmor;
-                }
-                //take neither
-                else if (choice == "3")
+					EquippedArmor = opponent.EquippedArmor;
+				}
+				//take neither
+				else if (choice == "3")
 				{
 					judgeStealing(EquippedWeapon, opponent.EquippedWeapon, EquippedArmor, opponent.EquippedArmor);
 				}
 
-			//only weapon is stealable
+				//only weapon is stealable
 			}
 			else if (opponent.EquippedWeapon.IsRemovable)
 			{
@@ -174,14 +181,14 @@ namespace ZappaQuest
 
 				if (choice == "1")
 				{
-                    Console.WriteLine($"You took the {opponent.EquippedWeapon.Description}.");
-                    judgeStealing(opponent.EquippedWeapon, EquippedWeapon);
+					Console.WriteLine($"You took the {opponent.EquippedWeapon.Description}.");
+					judgeStealing(opponent.EquippedWeapon, EquippedWeapon);
 					EquippedWeapon = opponent.EquippedWeapon;
-                }
+				}
 				else if (choice == "2")
-                {
-                    judgeStealing(EquippedWeapon, opponent.EquippedWeapon);
-                }
+				{
+					judgeStealing(EquippedWeapon, opponent.EquippedWeapon);
+				}
 			}
 
 			//only armor is stealable
@@ -196,14 +203,14 @@ namespace ZappaQuest
 
 				if (choice == "1")
 				{
-                    Console.WriteLine($"You took the {opponent.EquippedArmor.Description}.");
-                    judgeStealing(opponent.EquippedArmor, EquippedArmor);
+					Console.WriteLine($"You took the {opponent.EquippedArmor.Description}.");
+					judgeStealing(opponent.EquippedArmor, EquippedArmor);
 					EquippedArmor = opponent.EquippedArmor;
-                }
+				}
 				else if (choice == "2")
-                {
-                    judgeStealing(EquippedArmor, opponent.EquippedArmor);
-                }
+				{
+					judgeStealing(EquippedArmor, opponent.EquippedArmor);
+				}
 			}
 			//can't take anything
 			else
@@ -214,8 +221,4 @@ namespace ZappaQuest
 		}
 	}
 
-	public class Monster : Creature
-	{
-
-	}
 }
