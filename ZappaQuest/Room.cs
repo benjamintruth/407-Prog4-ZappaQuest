@@ -122,7 +122,7 @@ namespace ZappaQuest
 			}
 		};
 
-		public Room(Boolean isSideRoom, Boolean isDungeonExit, Room[] exits)
+		public Room(int index, Boolean isSideRoom, Boolean isDungeonExit, Room[] exits)
 		{
 			// build room name and description
 			Boolean usedAllRoomDescriptions = RoomDescUsedCounter >= RoomNamesAndDescriptions.Length;
@@ -145,6 +145,7 @@ namespace ZappaQuest
 				Description = "It's a big, stinky bathroom. There are many toilets and showers, in a wide variety of sizes, from comically small to worrying large.";
 			}
 
+			RoomIndex = index;
 			Exits = exits;
 			IsDungeonExit = isDungeonExit;
 			// side rooms are bonus rooms... terminology differs based on if we are concerned about room position
@@ -158,23 +159,20 @@ namespace ZappaQuest
 			Console.WriteLine($"You are in the {Name}.");
 			Console.WriteLine(Description);
 
-			Console.WriteLine("There are these Exits: ");
+			// TODO: print creatures
 			PrintExits();
+			PrintRoomItems();
+
 
 			if (IsDungeonExit)
 			{
-				Console.WriteLine("This is the Dungeon Exit.");
+				Console.WriteLine("\nThis is the Dungeon Exit.");
 			}
-
-
-
-			PrintRoomItems();
-			Console.WriteLine("\n--------------------\n");
 		}
 
 		public void PrintExits()
 		{
-
+			Console.WriteLine("There are these Exits: ");
 			for (int i = 0; i < Exits.Length; i++)
 			{
 
@@ -232,6 +230,165 @@ namespace ZappaQuest
 			{
 				Console.WriteLine($"		{items.Information()}");
 			}
+		}
+
+		public void Navigate(Frank player)
+		{
+
+			Boolean newRoomSelected = false;
+			while (!newRoomSelected)
+			{
+
+				Console.WriteLine("Enter a selection for each exit you would like to take: ");
+				// slightly modified version of print exits
+				for (int i = 0; i < Exits.Length; i++)
+				{
+
+					if (Exits[i] != null)
+					{
+						String exitDisplayLine = "		";
+						if (IsBonusRoom)
+						{
+							exitDisplayLine += "1. (EAST) ";
+						}
+
+						// add north and south for normal rooms
+						// exits [1] is reserved for side / bonus rooms
+						else if (Exits[1] == null)
+						{
+							if (i == 0 && Exits[0] != null)
+							{
+								exitDisplayLine += "1. (NORTH) ";
+							}
+							if (i == 3 && Exits[3] != null)
+							{
+								exitDisplayLine += "2. (SOUTH) ";
+							}
+						}
+
+						// if we have three rooms ( attached bonus room case) bonus room will be the first in the exits array
+						else
+						{
+							if (i == 0 && Exits[0] != null)
+							{
+								exitDisplayLine += "1. (WEST) ";
+							}
+							if (i == 1 && Exits[1] != null)
+							{
+								exitDisplayLine += "2. (NORTH) ";
+							}
+							if (i == 3 && Exits[3] != null)
+							{
+								exitDisplayLine += "3. (SOUTH) ";
+							}
+						}
+
+						// add room name and print line
+						exitDisplayLine += Exits[i].Name;
+						Console.WriteLine(exitDisplayLine);
+					}
+				}
+
+				// add back line
+				int BackSelector = 0;
+				if (IsBonusRoom)
+				{
+					BackSelector = 1;
+				}
+				else if (Exits[1] == null)
+				{
+					BackSelector = 3;
+				}
+				else
+				{
+					BackSelector = 4;
+				}
+				Console.WriteLine($"		{BackSelector}. BACK");
+
+				// query user
+				String exitSelection = Console.ReadLine();
+
+				// handle navigation differently based on room type
+				// bonus room, only can go back to main room or exit the move loop
+				if (IsBonusRoom)
+				{
+					if (exitSelection == "1")
+					{
+						// move frank's room index to the index of the exit
+						player.CurrentRoomIndex = Exits[0].RoomIndex;
+						newRoomSelected = true;
+					}
+					else if (exitSelection == "2")
+					{
+						// break loop
+						newRoomSelected = true;
+					}
+					else
+					{
+						Console.WriteLine("Sorry, didn't quite get that.");
+					}
+				}
+				// main north/south room, no side room
+				else if (Exits[1] == null)
+				{
+					if (exitSelection == "1")
+					{
+						// north travel
+						player.CurrentRoomIndex = Exits[0].RoomIndex;
+						newRoomSelected = true;
+					}
+					else if (exitSelection == "2")
+					{
+						// south travel
+						player.CurrentRoomIndex = Exits[3].RoomIndex;
+						newRoomSelected = true;
+					}
+					else if (exitSelection == "3")
+					{
+						// break loop
+						newRoomSelected = true;
+					}
+					else
+					{
+						Console.WriteLine("Sorry, didn't quite get that.");
+					}
+				}
+				// room that do have side rooms, three options
+				else
+				{
+					if (exitSelection == "1")
+					{
+						// west travel
+						player.CurrentRoomIndex = Exits[0].RoomIndex;
+						newRoomSelected = true;
+					}
+					else if (exitSelection == "2")
+					{
+						// north travel
+						player.CurrentRoomIndex = Exits[1].RoomIndex;
+						newRoomSelected = true;
+					}
+					else if (exitSelection == "3")
+					{
+						// south travel
+						player.CurrentRoomIndex = Exits[3].RoomIndex;
+						newRoomSelected = true;
+					}
+					else if (exitSelection == "4")
+					{
+						// break loop
+						newRoomSelected = true;
+					}
+					else
+					{
+						Console.WriteLine("Sorry, didn't quite get that.");
+					}
+				}
+
+
+			}
+
+
 		}
 
 	}

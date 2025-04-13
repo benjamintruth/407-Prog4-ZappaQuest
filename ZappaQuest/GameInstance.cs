@@ -43,17 +43,51 @@ namespace ZappaQuest
 			while (!GAME_OVER)
 			{
 				// main game loop ( LOOP = TURN )
+				Room currentRoom = Dungeon[thePlayer.CurrentRoomIndex];
 
+				// print room description
+				currentRoom.PrintRoomDescription();
 
+				// create loop for actions in this room until we leave
+				Boolean inSameRoom = true;
 
+				while (inSameRoom)
+				{
 
+					// if room has creature(s), run combat loop before advancing:
+					// combat loop
 
+					// query action:
+					Console.WriteLine("These are your options: \n1. TAKE EXIT");
+					if (currentRoom.ItemsRoom.Count > 0)
+					{
+						Console.WriteLine("2. TAKE ITEM");
+					}
+					String initialTurnChoice = Console.ReadLine();
 
-				GAME_OVER = true;
+					if (initialTurnChoice == "1")
+					{
+						// call navigate on frank
+						currentRoom.Navigate(thePlayer);
+						// we moved on
+						inSameRoom = false;
+					}
+					else if (initialTurnChoice == "2")
+					{
+						// DEV
+						// TODO: item pickup
+						Console.WriteLine("Woopsie, can't do that yet.");
+
+						// room.PickupItem ( print options with in for each, accept int, move item from room list to player list)
+					}
+					else
+					{
+						Console.WriteLine("TRY AGAIN");
+					}
+				}
+				// GAME_OVER = true;
 			}
 		}
-
-
 
 		private String[] GreetPlayer()
 		{
@@ -107,7 +141,7 @@ namespace ZappaQuest
 				Boolean isLastRoom = (i + 1 == maxRooms);
 
 				// isLastRoom passed into isDungeonExit so that lastRoom is exit
-				rooms[i] = new Room(isSideRoom, isLastRoom, new Room[4]);
+				rooms[i] = new Room(i, isSideRoom, isLastRoom, new Room[4]);
 				// 4 possible exits: North, East, South, West. 
 				// The indices in the exits array do not correspond to specific cardinal directions, as rooms can be 'rotated' 
 			}
