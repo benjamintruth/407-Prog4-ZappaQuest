@@ -68,6 +68,7 @@ namespace ZappaQuest
 					if (thePlayer.Inventory.Count > 0) {
 						Console.WriteLine("3. DROP ITEM");
 					}
+					Console.WriteLine("5. REST");
 					String initialTurnChoice = Console.ReadLine();
 
 					if (initialTurnChoice == "1")
@@ -87,6 +88,9 @@ namespace ZappaQuest
 					}
 					else if (initialTurnChoice == "3") {
 						currentRoom.DropItem(thePlayer);
+					}
+					else if (initialTurnChoice == "5") {
+						thePlayer.RestPlayer();
 					}
 					else
 					{

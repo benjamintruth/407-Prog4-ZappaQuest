@@ -146,6 +146,18 @@ namespace ZappaQuest
 			}
 		}
 
+		public void RestPlayer() {
+			int restHealing = new Random().Next(1,6);
+
+			Health += restHealing;
+			// Maximum health set to 100
+			if (Health > 100) {
+				Health = 100;
+			}
+
+			Console.WriteLine($"You are resting and restored {restHealing} HP. Your health is now: {Health}");
+		}
+
 		private void stealFrom(Creature opponent)
 		{
 			//weapon and armor are both stealable
