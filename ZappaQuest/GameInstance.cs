@@ -395,6 +395,8 @@ namespace ZappaQuest
 			}
 		}
 
+		private void AddCreaturesToDungeon(Room[] Dungeon) { }
+
 		//roll a "die" and have the user time the outcome
 		public int DiceRoll(string Prompt, int Max = 20)
 		{
@@ -435,13 +437,14 @@ namespace ZappaQuest
 
 		public static int TakeInput(int max)
 		{
-			int input = int.Parse(Console.ReadKey().KeyChar.ToString());
-			while (input < 0 || input > max)
+			string input = Console.ReadLine();
+			int value;
+			while (input.Length > 1 || int.TryParse(input, out value) && (value <= 0 || value > max))
 			{
-				Console.WriteLine("Please enter a valud input");
-				input = Console.ReadKey().KeyChar - '0';
+				Console.Write("Please enter a valid input");
+				input = Console.ReadLine();
 			}
-			return input;
+			return value;
 		}
 
 		// end class
