@@ -132,9 +132,9 @@ namespace ZappaQuest
 			bool usedAllRoomDescriptions = RoomDescUsedCounter >= RoomNamesAndDescriptions.Length;
 			if (!usedAllRoomDescriptions)
 			{
-				RoomDescUsedCounter++;
 				RoomDescription currentRoomDescription = RoomNamesAndDescriptions[RoomDescUsedCounter];
-				Name = currentRoomDescription.RoomName;
+                RoomDescUsedCounter++;
+                Name = currentRoomDescription.RoomName;
 				Description = currentRoomDescription.RoomDescriptionText;
 				// indicate bonus rooms
 				if (isSideRoom)
