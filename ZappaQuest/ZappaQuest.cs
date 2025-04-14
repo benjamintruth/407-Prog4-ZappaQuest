@@ -1,7 +1,4 @@
-﻿using System;
-using ZappaQuest;
-
-namespace ZappaQuest
+﻿namespace ZappaQuest
 {
 	class ZappaQuest
 	{

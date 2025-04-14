@@ -10,22 +10,26 @@ namespace ZappaQuest
 
 		public bool IsBonusRoom { get; }
 
+		// index of this room in the Dungeon (rooms) array... used to set the player's current index during navigation
 		public int RoomIndex { get; set; }
 
 		// List of Items for each room Created
 		public List<Item> ItemsRoom { get; set; }
 
-		// list of creatures... only ever has 
+		// list of creatures... only ever has one or none, but could easily add more as structured
 		public List<Enemy> EnemiesRoom { get; set; }
 
+		// simple struct to hold room details during generation
 		private struct RoomDescription
 		{
 			public string RoomName { get; set; }
 			public string RoomDescriptionText { get; set; }
 		}
 
-		// New room types for adventure game
+		// this static int tracks whether a given room has been generated.. incremented starting from 0 as descriptions are used
 		private static int RoomDescUsedCounter = 0;
+
+		// simple data holder of different room descriptions
 		private static readonly RoomDescription[] RoomNamesAndDescriptions = new RoomDescription[]
 		{
 			new RoomDescription {
@@ -121,23 +125,25 @@ namespace ZappaQuest
 				RoomDescriptionText = "A retrofuturistic command center with blinking consoles and mysterious screens showing scenes from throughout the dungeon. Everything seems interconnected by tubes and wires that pulse with conceptual energy. The centerpiece is a three-dimensional model of what might be the entire universe, or just a very ambitious electrical circuit."
 			}
 		};
-
+		// room main constructor
 		public Room(int index, bool isSideRoom, bool isDungeonExit, Room[] exits)
 		{
 			// build room name and description
 			bool usedAllRoomDescriptions = RoomDescUsedCounter >= RoomNamesAndDescriptions.Length;
 			if (!usedAllRoomDescriptions)
 			{
-				RoomDescription currentRoomDescription = RoomNamesAndDescriptions[RoomDescUsedCounter];
 				RoomDescUsedCounter++;
+				RoomDescription currentRoomDescription = RoomNamesAndDescriptions[RoomDescUsedCounter];
 				Name = currentRoomDescription.RoomName;
 				Description = currentRoomDescription.RoomDescriptionText;
+				// indicate bonus rooms
 				if (isSideRoom)
 				{
 					Name += " (BONUS ROOM)";
 					Description = "\n This is a BONUS ROOM!";
 				}
 			}
+			// once we have used all our descriptions, everything is a stinky bathroom
 			else
 			{
 				// use generic description
@@ -157,6 +163,7 @@ namespace ZappaQuest
 		// print room description:
 		public void PrintRoomDescription()
 		{
+			// describe room
 			Console.WriteLine($"You are in the {Name}.");
 			Console.WriteLine(Description);
 
@@ -165,21 +172,23 @@ namespace ZappaQuest
 			PrintRoomItems();
 			PrintRoomEnemies();
 
+			// indicate last room (auto victory here after clearing hostile creatures)
 			if (IsDungeonExit)
 			{
 				Console.WriteLine("\nThis is the Dungeon Exit.");
 			}
 		}
 
+		// print exits, also showing corresponding directions
 		public void PrintExits()
 		{
 			Console.WriteLine("There are these Exits: ");
 			for (int i = 0; i < Exits.Length; i++)
 			{
-
 				if (Exits[i] != null)
 				{
 					String exitDisplayLine = "		";
+					// bonus rooms are always east of main room
 					if (IsBonusRoom)
 					{
 						exitDisplayLine += " (EAST) ";
@@ -223,6 +232,7 @@ namespace ZappaQuest
 			}
 		}
 
+		// simple print of room items
 		public void PrintRoomItems()
 		{
 			Console.WriteLine("Current Items in room:");
@@ -232,6 +242,7 @@ namespace ZappaQuest
 			}
 		}
 
+		// simple print of room items
 		public void PrintRoomEnemies()
 		{
 			Console.WriteLine("Current Enemies in room:");
@@ -320,6 +331,7 @@ namespace ZappaQuest
 			ItemsRoom.Add(selectItem);
 		}
 
+		// allows eating food in inventory
 		public void EatFood(Frank player)
 		{
 			var foodItem = player.Inventory.OfType<Food>().ToList();
@@ -346,18 +358,17 @@ namespace ZappaQuest
 			Console.WriteLine($"You have chosen to eat {selectFoodItem.Description}");
 		}
 
+		// main navigation method... moves frank from room to room
 		public void Navigate(Frank player)
 		{
-
+			// loop while room unselected
 			bool newRoomSelected = false;
 			while (!newRoomSelected)
 			{
-
+				// three different room configurations... generate exit display options differently based on kind
 				Console.WriteLine("Enter a selection for each exit you would like to take: ");
-				// slightly modified version of print exits
 				for (int i = 0; i < Exits.Length; i++)
 				{
-
 					if (Exits[i] != null)
 					{
 						String exitDisplayLine = "		";
@@ -379,7 +390,6 @@ namespace ZappaQuest
 								exitDisplayLine += "2. (SOUTH) ";
 							}
 						}
-
 						// if we have three rooms ( attached bonus room case) bonus room will be the first in the exits array
 						else
 						{
@@ -403,7 +413,7 @@ namespace ZappaQuest
 					}
 				}
 
-				// add back line
+				// add back line ( needs varying index based on room type so back is always last option)
 				int BackSelector = 0;
 				if (IsBonusRoom)
 				{
@@ -498,12 +508,7 @@ namespace ZappaQuest
 						Console.WriteLine("Sorry, didn't quite get that.");
 					}
 				}
-
-
 			}
-
-
 		}
-
 	}
 }

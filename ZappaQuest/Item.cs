@@ -1,6 +1,13 @@
 namespace ZappaQuest
 {
-	// ITEM CLASS
+	// ITEM CLASS ------------------------------------------------------------
+	// This class is a base for all items in the adventure game, including:
+	// Weapon, Armor, Treasure, Food(Consumable Items), and Magic items.
+	// Each item has: Description(with stats), and computed Gold Value
+	// All subclasses inherits from Item with specific properties and override Information()
+	// to display its details. 
+
+	// Item Class
 	public abstract class Item
 	{
 		// Type and Description are String
@@ -8,7 +15,7 @@ namespace ZappaQuest
 		// Have a bool to check if item is magical or not
 		public bool IsMagical { get; set; }
 
-		// Gold value is calculated based off the attributes 
+		// Gold Value: value is calculated base don subclasses attributes and increased by 30% if magical
 		public int GoldValue { get; set; }
 
 		// Item Constructor: Assign both item's description and if it is magical
@@ -18,13 +25,14 @@ namespace ZappaQuest
 			IsMagical = isMagical;
 		} // end Item Constructor
 
-		// Display information on items which can be overridden by subclasses
+		// Display basic information on items which can be overridden by subclasses
 		public virtual string Information()
 		{
 			return $"Item: {Description}, Magical: {IsMagical}";
 		}
 
 		// Compare item to Gold Value 
+		// used for determining to player which item is more valuable 
 		public int CompareTo(Item other)
 		{
 			if (other == null) return 1;
@@ -36,19 +44,25 @@ namespace ZappaQuest
 	// Subclasses: Weapon, Armor, Treasure, Consumable(Food), Magic Items
 	// -----------------------------------------------------------------------
 
-	// Weapon Subclass
+	// WEAPON SUBCLASS 
+	// Used in combat with Creatures. This subclass includes: attacks per turn,
+	// maximum damage, and whether weapon is removable. 
 	public class Weapon : Item
 	{
+		// Number of times weapon can be used in single turn
 		public int NumAttacksPerTurn { get; set; }
+		// Maximum number of damage weapon can perform on creature
 		public int MaxDamage { get; set; }
+		// Checks if weapon obtained is removable 
 		public bool IsRemovable { get; set; }
-
+		// Weapon Constructor: Assign each description values and calculates its gold value
 		public Weapon(string description, bool isMagical, int attacksPerTurn, int maxDamage, bool isRemovable)
 		: base(description, isMagical)
 		{
 			NumAttacksPerTurn = attacksPerTurn;
 			MaxDamage = maxDamage;
 			IsRemovable = isRemovable;
+			// Calculation of Gold Value: (damage * attacks * 10); Value increased by 30% if magical. 
 			GoldValue = maxDamage * attacksPerTurn * 10;
 			if (this.IsMagical)
 			{
@@ -61,8 +75,8 @@ namespace ZappaQuest
 			return $"Weapon: {Description}, Attacks: {NumAttacksPerTurn}, Max damage: {MaxDamage}";
 		}
 	} // End Weapon Subclass
-
-	// Armor Subclass
+	  // -------------------------------------
+	  // ARMOR SUBCLASS
 	public class Armor : Item
 	{
 		// Armor : Has a protection value and whether it is removable
@@ -88,8 +102,8 @@ namespace ZappaQuest
 
 
 	} // End Armor Subclass 
-
-	// Treasure Subclass
+	  // -------------------------------------
+	  // TREASURE SUBCLASS
 	public class Treasure : Item
 	{
 		// Treasure : Contains int value 
@@ -112,8 +126,8 @@ namespace ZappaQuest
 		}
 
 	} // End Treasure Subclass 
-
-	// Food Subclass
+	  // -------------------------------------
+	  // FOOD SUBCLASS
 	public class Food : Item
 	{
 		// Food: Has maximum value so when eaten, will heal User at random amount up to that value
@@ -133,12 +147,12 @@ namespace ZappaQuest
 
 		public override string Information()
 		{
-			return $"Food/Consumable: {Description}, Maximimum Healing: {Consumable}";
+			return $"Food/Consumable: {Description}, Maximum Healing: {Consumable}";
 		}
 
 	} // End Food Subclass 
-
-	// Magic Item Subclass
+	  // -------------------------------------
+	  // MAGIC ITEM SUBCLASS
 	public class MagicItem : Item
 	{
 		public int JazzPower { get; set; }
@@ -154,7 +168,6 @@ namespace ZappaQuest
 			}
 
 		}
-
 		// Display Information on Magic Items
 		public override string Information()
 		{
