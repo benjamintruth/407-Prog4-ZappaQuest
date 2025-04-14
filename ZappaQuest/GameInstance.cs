@@ -38,7 +38,13 @@ namespace ZappaQuest
 			// create player creature (Frank)
 			Frank thePlayer = new Frank(this);
 
-			// build room array
+			// DEV
+			Console.WriteLine($"Dungeon length: {Dungeon.Length}");
+			foreach (Room room in Dungeon)
+			{
+				room.PrintRoomDescription();
+			}
+
 			while (!GAME_OVER)
 			{
 				// main game loop ( LOOP = TURN )
@@ -67,12 +73,15 @@ namespace ZappaQuest
 					if (!thePlayer.isAlive())
 					{
 						GAME_OVER = true;
+						// have to end the 'in same room' loop to end the game
+						inSameRoom = false;
 						Console.WriteLine("You Lose! You were not good at being Frank! Frank is dead! Not Groovy! GG!");
 					}
 					else if (currentRoom.IsDungeonExit)
 					{
 						GAME_OVER = true;
-						Console.WriteLine("Congratulations! You've reached the end of your journey through ZappaQuest. Your adventure has come to a successful conclusion. You win!");
+						inSameRoom = false;
+						Console.WriteLine($"Congratulations {PlayerData[1]}! You've reached the end of your journey through ZappaQuest. Your adventure has come to a successful conclusion. You win!");
 					}
 					// decide what to do in the room 
 					else
@@ -95,6 +104,10 @@ namespace ZappaQuest
 						if (thePlayer.Inventory.OfType<Food>().Any())
 						{
 							option[listOption++] = "EAT FOOD";
+						}
+						if (currentRoom.EnemiesRoom.Count > 0)
+						{
+							option[listOption++] = "FIGHT ENEMY";
 						}
 						option[listOption++] = "REST";
 						option[listOption++] = "VIEW INVENTORY";
@@ -119,6 +132,9 @@ namespace ZappaQuest
 								break;
 							case "EAT FOOD":
 								currentRoom.EatFood(thePlayer);
+								break;
+							case "FIGHT ENEMY":
+								thePlayer.fight(currentRoom.EnemiesRoom[0]);
 								break;
 							case "REST":
 								thePlayer.RestPlayer();
@@ -149,7 +165,7 @@ namespace ZappaQuest
 				case "alright":
 				case "sure":
 				case "absolutely":
-					PlayerData[1] = "20";
+					PlayerData[1] = "15";
 					break;
 				case "no":
 				case "n":
@@ -456,7 +472,8 @@ namespace ZappaQuest
 			// new random object
 			Random gen = new Random();
 			// creatures list
-			List<Enemy> creatures = GenerateCreatures();
+			Enemy[] creatures = GenerateCreatures().ToArray();
+			gen.Shuffle(creatures);
 
 			// generate a random set of rooms to put enemies in
 			int[] RandomRooms = Enumerable.Range(1, Dungeon.Length - 1).ToArray();
@@ -466,6 +483,10 @@ namespace ZappaQuest
 			int DifficultyLevel = Int32.Parse(PlayerData[1]);
 			for (int i = 0; i <= DifficultyLevel; i++)
 			{
+				// DEV
+				Console.WriteLine($"Dungeon Length: {Dungeon.Length}");
+				Console.WriteLine($"Random Room at i: {RandomRooms[i]}");
+
 				Dungeon[RandomRooms[i]].EnemiesRoom.Add(creatures[i]);
 			}
 		}
@@ -473,9 +494,6 @@ namespace ZappaQuest
 		//roll a "die" and have the user time the outcome
 		public int DiceRoll(string Prompt, int Max = 20)
 		{
-			//remove any pending keys
-			//while (Console.KeyAvailable)
-			//Console.ReadKey(intercept: true);
 
 			//create a random order of numbers
 			Random Random = new Random();

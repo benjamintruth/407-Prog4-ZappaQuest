@@ -28,11 +28,13 @@ namespace ZappaQuest
 			CurrentGame = currentGame;
 		}
 
+		//Function to return if an enemy is dead yet
 		public bool isAlive()
 		{
 			return Health > 0;
 		}
 
+		//Take damage and reduce health when hit
 		public void takesDamage(int amount)
 		{
 			Health -= amount;
@@ -41,7 +43,7 @@ namespace ZappaQuest
 		//attack, returns true if the opponent dies
 		public bool attack(Creature opponent)
 		{
-			//attack a certain number of times based on the weapon
+			//strike a certain number of times based on the weapon
 			for (int i = 0; i < EquippedWeapon.NumAttacksPerTurn; i++)
 			{
 				//roll a die for power
@@ -55,15 +57,18 @@ namespace ZappaQuest
 				}
 				else
 				{
+					//Attack is blocked by armor, deal no damage
 					Console.WriteLine($"{opponent.Name}'s {opponent.EquippedArmor.Description} blocked it!");
 				}
 
+				//Check if the opponent is still alive every strike
 				if (!opponent.isAlive())
 				{
 					Console.WriteLine($"{Name} defeated {opponent.Name}!");
 					return true;
 				}
 			}
+			//The opponent did not die
 			return false;
 		}
 	}
@@ -191,6 +196,10 @@ namespace ZappaQuest
 					Console.WriteLine($"{i + 1}. {Inventory[i].Description}");
 				}
 			}
+			Console.WriteLine("Equipped Weapon: ");
+			Console.WriteLine($"		{this.EquippedWeapon.Information()}");
+			Console.WriteLine("Equipped Armor");
+			Console.WriteLine($"		{this.EquippedArmor.Information()}");
 			Console.WriteLine("----------------\n");
 		}
 
@@ -200,29 +209,29 @@ namespace ZappaQuest
 			if (opponent.EquippedWeapon.IsRemovable && opponent.EquippedArmor.IsRemovable)
 			{
 				Console.WriteLine($"You can take the {opponent.Name}'s:\n" +
-					$"{opponent.EquippedWeapon.Description} with {opponent.EquippedWeapon.NumAttacksPerTurn} attacks, {opponent.EquippedWeapon.MaxDamage} strength) (1)" +
-					$"{opponent.EquippedArmor.Description} with {opponent.EquippedArmor.ProtectValue} defense (2)" +
-					"or don't (3)");
+					$"1. {opponent.EquippedWeapon.Description} with {opponent.EquippedWeapon.NumAttacksPerTurn} attacks, {opponent.EquippedWeapon.MaxDamage} strength) (1)\n" +
+					$"2. {opponent.EquippedArmor.Description} with {opponent.EquippedArmor.ProtectValue} defense (2)\n" +
+					"3. Don't take anything");
 
 				// query user
-				String choice = Console.ReadLine();
+				int choice = GameInstance.TakeInput(3);
 
 				//take weapon
-				if (choice == "1")
+				if (choice == 1)
 				{
 					Console.WriteLine($"You took the {opponent.EquippedWeapon.Description}.");
 					judgeStealing(opponent.EquippedWeapon, EquippedWeapon);
 					EquippedWeapon = opponent.EquippedWeapon;
 				}
 				//take armor
-				else if (choice == "2")
+				else if (choice == 2)
 				{
 					Console.WriteLine($"You took the {opponent.EquippedArmor.Description}.");
 					judgeStealing(opponent.EquippedArmor, EquippedArmor);
 					EquippedArmor = opponent.EquippedArmor;
 				}
 				//take neither
-				else if (choice == "3")
+				else if (choice == 3)
 				{
 					judgeStealing(EquippedWeapon, opponent.EquippedWeapon, EquippedArmor, opponent.EquippedArmor);
 				}
@@ -232,19 +241,19 @@ namespace ZappaQuest
 			else if (opponent.EquippedWeapon.IsRemovable)
 			{
 				Console.WriteLine($"You can take the {opponent.Name}'s:\n" +
-				$"{opponent.EquippedWeapon.Description} with {opponent.EquippedWeapon.NumAttacksPerTurn} attacks, {opponent.EquippedWeapon.MaxDamage} strength) (1) +" +
-				"or don't (2)'");
+				$"1. {opponent.EquippedWeapon.Description} with {opponent.EquippedWeapon.NumAttacksPerTurn} attacks, {opponent.EquippedWeapon.MaxDamage} strength)\n" +
+				"2. Don't take anything");
 
 				// query user
-				String choice = Console.ReadLine();
+				int choice = GameInstance.TakeInput(2);
 
-				if (choice == "1")
+				if (choice == 1)
 				{
 					Console.WriteLine($"You took the {opponent.EquippedWeapon.Description}.");
 					judgeStealing(opponent.EquippedWeapon, EquippedWeapon);
 					EquippedWeapon = opponent.EquippedWeapon;
 				}
-				else if (choice == "2")
+				else if (choice == 2)
 				{
 					judgeStealing(EquippedWeapon, opponent.EquippedWeapon);
 				}
@@ -254,19 +263,19 @@ namespace ZappaQuest
 			else if (opponent.EquippedArmor.IsRemovable)
 			{
 				Console.WriteLine($"You can take the {opponent.Name}'s:\n" +
-				$"{opponent.EquippedArmor.Description} with {opponent.EquippedArmor.ProtectValue} defense (1)" +
-				"or don't (2)'");
+				$"1. {opponent.EquippedArmor.Description} with {opponent.EquippedArmor.ProtectValue} defense\n" +
+				"2. Don't take anything");
 
 				// query user
-				String choice = Console.ReadLine();
+				int choice = GameInstance.TakeInput(2);
 
-				if (choice == "1")
+				if (choice == 1)
 				{
 					Console.WriteLine($"You took the {opponent.EquippedArmor.Description}.");
 					judgeStealing(opponent.EquippedArmor, EquippedArmor);
 					EquippedArmor = opponent.EquippedArmor;
 				}
-				else if (choice == "2")
+				else if (choice == 2)
 				{
 					judgeStealing(EquippedArmor, opponent.EquippedArmor);
 				}

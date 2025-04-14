@@ -277,34 +277,31 @@ namespace ZappaQuest
 					{
 						player.judgeStealing(weapon, player.EquippedWeapon);
 						player.EquippedWeapon = weapon;
-						ItemsRoom.RemoveAt(selection - 1);
+						ItemsRoom.Remove(selectItem);
 						Console.WriteLine($"you equipped: {player.EquippedWeapon.Description}");
 
 					}
 					// If item choice is armor, equip armor
-					if (selectItem is Armor armor)
+					else if (selectItem is Armor armor)
 					{
 						player.judgeStealing(armor, player.EquippedArmor);
 						player.EquippedArmor = armor;
-						ItemsRoom.RemoveAt(selection - 1);
+						ItemsRoom.Remove(selectItem);
 						Console.WriteLine($"you equipped: {player.EquippedArmor.Description}");
-					}
-
-					// Judge 
-
-
-
-
-					// Add item to player inventory
-					bool addSuccess = player.PickUpItem(selectItem);
-					if (addSuccess)
-					{
-						ItemsRoom.RemoveAt(selection - 1);
-						Console.WriteLine($"You have successfully picked up: {selectItem.Information()}");
 					}
 					else
 					{
-						Console.WriteLine("inventory is full. You cannot pick up item.");
+						// Add item to player inventory
+						bool addSuccess = player.PickUpItem(selectItem);
+						if (addSuccess)
+						{
+							ItemsRoom.Remove(selectItem);
+							Console.WriteLine($"You have successfully picked up: {selectItem.Information()}");
+						}
+						else
+						{
+							Console.WriteLine("inventory is full. You cannot pick up item.");
+						}
 					}
 				}
 				else
