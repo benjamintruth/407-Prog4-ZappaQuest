@@ -18,6 +18,9 @@ namespace ZappaQuest
 		// List of Items for each room Created
 		public List<Item> ItemsRoom { get; set; }
 
+		// list of creatures... only ever has 
+		public List<Enemy> EnemiesRoom { get; set; }
+
 		private struct RoomDescription
 		{
 			public string RoomName { get; set; }
@@ -151,6 +154,7 @@ namespace ZappaQuest
 			// side rooms are bonus rooms... terminology differs based on if we are concerned about room position
 			IsBonusRoom = isSideRoom;
 			ItemsRoom = new List<Item>();
+			EnemiesRoom = new List<Enemy>();
 		}
 
 		// print room description:
@@ -162,7 +166,7 @@ namespace ZappaQuest
 			// TODO: print creatures
 			PrintExits();
 			PrintRoomItems();
-
+			PrintRoomEnemies();
 
 			if (IsDungeonExit)
 			{
@@ -232,6 +236,15 @@ namespace ZappaQuest
 			}
 		}
 
+		public void PrintRoomEnemies()
+		{
+			Console.WriteLine("Current Enemies in room:");
+			foreach (var enemy in EnemiesRoom)
+			{
+				Console.WriteLine($"		{enemy.Name} - {enemy.Description}");
+			}
+		}
+
 		// Picking up Items in Room 
 		public void PickUpItem(Frank player)
 		{
@@ -281,49 +294,60 @@ namespace ZappaQuest
 			}
 		} // end PickUpItem Method
 
-		public void DropItem(Frank player) {
-			if (player.Inventory.Count == 0) {
+		public void DropItem(Frank player)
+		{
+			if (player.Inventory.Count == 0)
+			{
 				Console.WriteLine("You do not have any items to drop.");
 				return;
 			}
 			// Display current items in player inventory to choose which to drop
 			Console.WriteLine("Current Items:");
-			for (int i=0; i < player.Inventory.Count; i++) {
-				Console.WriteLine($"{i+1}. {player.Inventory[i].Information()}");
+			for (int i = 0; i < player.Inventory.Count; i++)
+			{
+				Console.WriteLine($"{i + 1}. {player.Inventory[i].Information()}");
 			}
 			// Ask player which item to drop
 			Console.WriteLine("Which item would you like to drop from inventory?");
 			Console.WriteLine("Be wise...");
 			string choice = Console.ReadLine();
 
-			if (int.TryParse(choice, out int selection)) {
-				if (selection >= 1 && selection <= player.Inventory.Count) {
+			if (int.TryParse(choice, out int selection))
+			{
+				if (selection >= 1 && selection <= player.Inventory.Count)
+				{
 					Item selectItem = player.Inventory[selection - 1];
 					player.DropItem(selectItem);
 					ItemsRoom.Add(selectItem);
 				}
-				else {
+				else
+				{
 					Console.WriteLine("Invalid selection. Please try again.");
 				}
 			}
-			else {
+			else
+			{
 				Console.WriteLine("Sorry, I didn't get that. Please enter a valid number.");
 			}
 		}
 
-		public void EatFod(Frank player) {
+		public void EatFood(Frank player)
+		{
 			var foodItem = player.Inventory.OfType<Food>().ToList();
 
-			if (foodItem.Count == 0) {
+			if (foodItem.Count == 0)
+			{
 				Console.WriteLine("You have no food items in your inventory to eat.");
 				return;
 			}
 			Console.WriteLine("Please Select a food item to eat:");
-			for (int i = 0; i < foodItem.Count; i++) {
+			for (int i = 0; i < foodItem.Count; i++)
+			{
 				Console.WriteLine($"{i + 1}. {foodItem[i].Description} (Max Heal: {foodItem[i].Consumable})");
 			}
 			int choice;
-			do {
+			do
+			{
 				Console.Write("Please eneter your choice: ");
 			} while (!int.TryParse(Console.ReadLine(), out choice) || choice < 1 || choice > foodItem.Count);
 

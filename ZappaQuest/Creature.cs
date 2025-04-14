@@ -5,7 +5,7 @@ using System.Runtime.InteropServices.Swift;
 namespace ZappaQuest
 {
 
-	public class Creature
+	public abstract class Creature
 	{
 		// add all base creature attributes:
 		public string Name { get; }
@@ -135,23 +135,28 @@ namespace ZappaQuest
 			return true;
 		}
 
-		public void DropItem(Item item) {
-			if (item == null) {
+		public void DropItem(Item item)
+		{
+			if (item == null)
+			{
 				Console.WriteLine("There are no items to drop.");
 				return;
 			}
-			if (Inventory.Contains(item)) {
+			if (Inventory.Contains(item))
+			{
 				Inventory.Remove(item);
 				Console.WriteLine($"You have dropped: {item.Information()} from Inventory.");
 			}
 		}
 
-		public void RestPlayer() {
-			int restHealing = new Random().Next(1,6);
+		public void RestPlayer()
+		{
+			int restHealing = new Random().Next(1, 6);
 
 			Health += restHealing;
 			// Maximum health set to 100
-			if (Health > 100) {
+			if (Health > 100)
+			{
 				Health = 100;
 			}
 
@@ -241,6 +246,17 @@ namespace ZappaQuest
 				Console.WriteLine("There's nothing you were able to take");
 			}
 			return;
+		}
+	}
+
+	public class Enemy : Creature
+	{
+		public bool Aggressive;
+
+		public Enemy(string name, string description, int health, Weapon equippedWeapon, Armor equippedArmor, GameInstance currentGame, bool aggressive)
+		: base(name, description, health, equippedWeapon, equippedArmor, currentGame)
+		{
+			Aggressive = aggressive;
 		}
 	}
 

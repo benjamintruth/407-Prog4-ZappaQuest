@@ -4,9 +4,7 @@ namespace ZappaQuest
 {
 	public class GameInstance
 	{
-
-
-		public bool GAME_OVER = false;
+		public bool GAME_OVER = false;//
 		public String[] PlayerData = new String[2];
 		//whether it's already displayed "(press any key to stop)"
 		public bool LearnedDice = false;
@@ -21,6 +19,7 @@ namespace ZappaQuest
 
 		private void RunGame()
 		{
+
 			// parse difficulty level
 			int DifficultyLevel = Int32.Parse(PlayerData[1]);
 
@@ -30,13 +29,8 @@ namespace ZappaQuest
 			// generate loot and add as drops
 			AddLootToDungeon(Dungeon);
 
-			// DEV
-			// loop through dungeon, printing exits, description, etc
-			// foreach (var room in Dungeon)
-			// {
-			// 	room.PrintRoomDescription();
-			// }
-
+			// Add enemies to dungeons
+			AddCreaturesToDungeon(Dungeon);
 
 			// create player creature (Frank)
 			Frank thePlayer = new Frank(this);
@@ -56,54 +50,68 @@ namespace ZappaQuest
 				while (inSameRoom)
 				{
 
-					// if room has creature(s), run combat loop before advancing:
-					// combat loop
+					// if room has aggressive enemy, auto-fight enemy
+					if (currentRoom.EnemiesRoom.Count > 0)
+					{
+						Enemy roomEnemy = currentRoom.EnemiesRoom[0];
+						if (roomEnemy.Aggressive)
+						{
+							thePlayer.fight(roomEnemy);
+						}
+					}
 
-					// query action:
-					Console.WriteLine("These are your options: \n1. TAKE EXIT");
+					// Set option to 1st option 
+					int listOption = 1;
+					Dictionary<int, string> option = new Dictionary<int, string>();
+
+					Console.WriteLine("These are your options:");
+					option[listOption++] = "TAKE EXIT";
+
 					if (currentRoom.ItemsRoom.Count > 0)
 					{
-						Console.WriteLine("2. TAKE ITEM");
+						option[listOption++] = "TAKE ITEM";
 					}
-					if (thePlayer.Inventory.Count > 0) {
-						Console.WriteLine("3. DROP ITEM");
+					if (thePlayer.Inventory.Count > 0)
+					{
+						option[listOption++] = "DROP ITEM";
 					}
-					if (thePlayer.Inventory.OfType<Food>().Any()) {
-						Console.WriteLine("4. EAT FOOD");
+					if (thePlayer.Inventory.OfType<Food>().Any())
+					{
+						option[listOption++] = "EAT FOOD";
 					}
-					Console.WriteLine("5. REST");
-					String initialTurnChoice = Console.ReadLine();
+					option[listOption++] = "REST";
+					option[listOption++] = "VIEW INVENTORY";
 
-					if (initialTurnChoice == "1")
+					foreach (var entry in option)
 					{
-						// call navigate on frank
-						currentRoom.Navigate(thePlayer);
-						// we moved on
-						inSameRoom = false;
+						Console.WriteLine($"{entry.Key}. {entry.Value}");
 					}
-					else if (initialTurnChoice == "2")
+
+					int selectOption = TakeInput(listOption);
+					switch (option[selectOption])
 					{
-						// DEV
-						// TODO: item pickup
-						//Console.WriteLine("Woopsie, can't do that yet.");
-						currentRoom.PickUpItem(thePlayer);
-						// room.PickupItem ( print options with in for each, accept int, move item from room list to player list)
-					}
-					else if (initialTurnChoice == "3") {
-						currentRoom.DropItem(thePlayer);
-					}
-					else if (initialTurnChoice == "4") {
-						currentRoom.EatFod(thePlayer);
-					}
-					else if (initialTurnChoice == "5") {
-						thePlayer.RestPlayer();
-					}
-					else
-					{
-						Console.WriteLine("TRY AGAIN");
+						case "TAKE EXIT":
+							currentRoom.Navigate(thePlayer);
+							inSameRoom = false;
+							break;
+						case "TAKE ITEM":
+							currentRoom.PickUpItem(thePlayer);
+							break;
+						case "DROP ITEM":
+							currentRoom.DropItem(thePlayer);
+							break;
+						case "EAT FOOD":
+							currentRoom.EatFood(thePlayer);
+							break;
+						case "REST":
+							thePlayer.RestPlayer();
+							break;
+						case "VIEW INVENTORY":
+							Console.WriteLine("Woops, not here yet.");
+							break;
 					}
 				}
-				// GAME_OVER = true;
+				// GAME_OVER = true; */
 			}
 		}
 
@@ -113,14 +121,18 @@ namespace ZappaQuest
 
 			Console.WriteLine("What is your name?");
 			PlayerData[0] = Console.ReadLine();
-			Console.WriteLine($"Nice to meet you, {PlayerData[0]}. Are you up for a challenge?");
+			Console.WriteLine($"Nice to meet you, {PlayerData[0]}. Are you up for a challenge? (yes/no)");
 			String PlayerResponse = Console.ReadLine();
 			// parse player respose... many other options removed for brevity
 			switch (PlayerResponse)
 			{
 				case "yes":
 				case "y":
-					PlayerData[1] = "100";
+				case "ok":
+				case "alright":
+				case "sure":
+				case "absolutely":
+					PlayerData[1] = "20";
 					break;
 				case "no":
 				case "n":
@@ -128,6 +140,7 @@ namespace ZappaQuest
 					break;
 				case "maybe":
 				case "m":
+				case "perhaps":
 					Console.WriteLine("YOU WILL BE PUNISHED FOR YOUR INDECISION.");
 					PlayerData[1] = "500";
 					break;
@@ -249,135 +262,145 @@ namespace ZappaQuest
 			};
 		}
 
-		private List<Creature> GenerateCreatures()
+		private List<Enemy> GenerateCreatures()
 		{
-			List<Creature> CreatureList = new List<Creature> {
-		new Creature(
-			name: "Cosmic Debris",
-			description: "A swirling mass of psychedelic space junk that dances erratically",
-			health: 50,
-			equippedWeapon: new Weapon("Rock Hands", true, 1, 20, true),
-			equippedArmor: null,
-			currentGame: this
-		),
-		new Creature(
-			name: "Yellow Snow Leopard",
-			description: "A growling husky with suspiciously yellow-tinted fur",
-			health: 35,
-			equippedWeapon: new Weapon("Teeth", true, 1, 20, true),
-			equippedArmor: null,
-			currentGame: this
-		),
-		new Creature(
-			name: "Bobby Brown",
-			description: "A preppy antagonist with an inflated ego and questionable morals",
-			health: 45,
-			equippedWeapon: null,
-			equippedArmor: null,
-			currentGame: this
-		),
-		new Creature(
-			name: "Muffin Man",
-			description: "A deranged baker covered in flour with sinister intentions",
-			health: 40,
-			equippedWeapon: null,
-			equippedArmor: null,
-			currentGame: this
-		),
-		new Creature(
-			name: "Camarillo Brillo",
-			description: "A witch with hair that glows in the dark and mysterious powers",
-			health: 55,
-			equippedWeapon: null,
-			equippedArmor: null,
-			currentGame: this
-		),
-		new Creature(
-			name: "Hot Rat",
-			description: "A fiery rodent with jazz-influenced attack patterns",
-			health: 25,
-			equippedWeapon: null,
-			equippedArmor: null,
-			currentGame: this
-		),
-		new Creature(
-			name: "Montana Banana Farmer",
-			description: "A delusional agriculturist with a tiny horse and dental floss obsession",
-			health: 30,
-			equippedWeapon: null,
-			equippedArmor: null,
-			currentGame: this
-		),
-		new Creature(
-			name: "Duke Of Prunes",
-			description: "idk.. he's like a prune guy... he's big",
-			health: 60,
-			equippedWeapon: null,
-			equippedArmor: null,
-			currentGame: this
-		),
-		new Creature(
-			name: "Central Scrutinizer",
-			description: "A mechanical enforcer of social and musical conformity",
-			health: 70,
-			equippedWeapon: null,
-			equippedArmor: null,
-			currentGame: this
-		),
-		new Creature(
-			name: "Lumpy Gravy Beast",
-			description: "An amorphous blob of sentient, experimental musical arrangements",
-			health: 45,
-			equippedWeapon: null,
-			equippedArmor: null,
-			currentGame: this
-		),
-		new Creature(
-			name: "Zomby Woof",
-			description: "A reanimated canine with an impressive vocal range",
-			health: 50,
-			equippedWeapon: null,
-			equippedArmor: null,
-			currentGame: this
-		),
-		new Creature(
-			name: "Dirty Love Creature",
-			description: "A pungent entity seeking questionable relations with household appliances",
-			health: 35,
-			equippedWeapon: null,
-			equippedArmor: null,
-			currentGame: this
-		),
-		new Creature(
-			name: "Illinois Enema Bandit",
-			description: "A notorious criminal with unconventional methods and a distinctive laugh",
-			health: 45,
-			equippedWeapon: null,
-			equippedArmor: null,
-			currentGame: this
-		),
-		new Creature(
-			name: "Dinah-Moe Humm",
-			description: "A smug challenger who never loses her bizarre betting games",
-			health: 40,
-			equippedWeapon: null,
-			equippedArmor: null,
-			currentGame: this
-		),
-		new Creature(
-			name: "G-Spot Tornado",
-			description: "A whirling vortex of impossible rhythms and unplayable notation",
-			health: 65,
-			equippedWeapon: null,
-			equippedArmor: null,
-			currentGame: this
-		)
-	};
-
-			// add 3 random pieces of magical equipment to random monsters
-
-
-			return CreatureList;
+			return new List<Enemy> {
+				new Enemy(
+					name: "Cosmic Debris",
+					description: "A swirling mass of psychedelic space junk that dances erratically",
+					health: 50,
+					equippedWeapon: new Weapon("Rock Hands", true, 1, 20, false),
+					equippedArmor: new Armor("Rock Armor", false, 12, false),
+					currentGame: this,
+					aggressive: true
+				),
+				new Enemy(
+					name: "Yellow Snow Leopard",
+					description: "A growling husky with suspiciously yellow-tinted fur",
+					health: 35,
+					equippedWeapon: new Weapon("Teeth", true, 1, 20, false),
+					equippedArmor: new Armor("Fur", false, 3, false),
+					currentGame: this,
+					aggressive: true
+				),
+				new Enemy(
+					name: "Bobby Brown",
+					description: "A preppy antagonist with an inflated ego and questionable morals",
+					health: 45,
+					equippedWeapon: new Weapon("hands", false, 1, 2, false),
+					equippedArmor: new Armor("skin", false, 3, false),
+					currentGame: this,
+					aggressive: true
+				),
+				new Enemy(
+					name: "Muffin Man",
+					description: "A deranged baker covered in flour with sinister intentions",
+					health: 40,
+					equippedWeapon: new Weapon("hands", false, 1, 3, false),
+					equippedArmor: new Armor("muffin flesh", false, 3, false),
+					currentGame: this,
+					aggressive: true
+				),
+				new Enemy(
+					name: "Camarillo Brillo",
+					description: "A witch with hair that glows in the dark and mysterious powers",
+					health: 55,
+					equippedWeapon: new Weapon("Magic Missile Spell", true, 3, 3, true),
+					equippedArmor: new Armor("Margic Robe", true, 3, true),
+					currentGame: this,
+					aggressive: false
+				),
+				new Enemy(
+					name: "Hot Rat",
+					description: "A fiery rodent with jazz-influenced attack patterns",
+					health: 25,
+					equippedWeapon: new Weapon("Teeth", true, 1, 5, false),
+					equippedArmor: new Armor("skin", false, 3, false),
+					currentGame: this,
+					aggressive: true
+				),
+				new Enemy(
+					name : "Farmer Banana",
+					description: "A delusional agriculturist with a tiny horse and dental floss obsession",
+					health: 30,
+					equippedWeapon: new Weapon("Farmer Banana Scythe", true, 1, 20, true),
+					equippedArmor: new Armor("skin", false, 3, false),
+					currentGame: this,
+					aggressive: false
+				),
+				new Enemy(
+					name: "Duke Of Prunes",
+					description: "idk.. he's like a prune guy... he's big",
+					health: 60,
+					equippedWeapon: new Weapon("Prune Hammer", true, 1, 20, true),
+					equippedArmor: new Armor("skin", false, 3, false),
+					currentGame: this,
+					aggressive: true
+				),
+				new Enemy(
+					name: "Central Scrutinizer",
+					description: "A mechanical enforcer of social and musical conformity",
+					health: 70,
+					equippedWeapon: new Weapon("Robo Teeth", true, 1, 20, false),
+					equippedArmor: new Armor("skin", false, 3, false),
+					currentGame: this,
+					aggressive: true
+				),
+				new Enemy(
+					name: "Lumpy Gravy Beast",
+					description: "An amorphous blob of sentient, experimental musical arrangements",
+					health: 45,
+					equippedWeapon: new Weapon("Gravy Teeth", true, 1, 15, false),
+					equippedArmor: new Armor("skin", false, 3, false),
+					currentGame: this,
+					aggressive: false
+				),
+				new Enemy(
+					name: "Zomby Woof",
+					description: "A reanimated canine with an impressive vocal range",
+					health: 50,
+					equippedWeapon: new Weapon("Zombie Teeth", true, 1, 15, false),
+					equippedArmor: new Armor("skin", false, 3, false),
+					currentGame: this,
+					aggressive: true
+				),
+				new Enemy(
+					name: "Dirty Love Creature",
+					description: "A pungent entity seeking questionable relations with household appliances",
+					health: 35,
+					equippedWeapon: new Weapon("Sticky Teeth", true, 1, 15, false),
+					equippedArmor: new Armor("goo armor", false, 3, false),
+					currentGame: this,
+					aggressive: true
+				),
+				new Enemy(
+					name: "Illinois Enema Bandit",
+					description: "A notorious criminal with unconventional methods and a distinctive laugh",
+					health: 45,
+					equippedWeapon: new Weapon("Chicago Knife", true, 3, 15, true),
+					equippedArmor: new Armor("skin", false, 3, false),
+					currentGame: this,
+					aggressive: true
+				),
+				new Enemy(
+					name: "Dinah-Moe Humm",
+					description: "A smug challenger who never loses her bizarre betting games",
+					health: 40,
+					equippedWeapon: new Weapon("Gambling... stick.. schileleigh", true, 2, 20, true),
+					equippedArmor: new Armor("skin", false, 3, false),
+					currentGame: this,
+					aggressive: false
+				),
+				new Enemy(
+					name: "G-Spot Tornado (MUSIC BASED)",
+					description: "A whirling vortex of impossible rhythms and unplayable notation",
+					health: 65,
+					equippedWeapon: new Weapon("Gambling... stick.. schileleigh", true, 10, 3, false),
+					equippedArmor: new Armor("skin", false, 3, false),
+					currentGame: this,
+					aggressive: true
+				)
+			};
 		}
 
 		private void AddLootToDungeon(Room[] Dungeon)
@@ -411,18 +434,34 @@ namespace ZappaQuest
 			}
 		}
 
-		private void AddCreaturesToDungeon(Room[] Dungeon) { }
+		private void AddCreaturesToDungeon(Room[] Dungeon)
+		{
+			// new random object
+			Random gen = new Random();
+			// creatures list
+			List<Enemy> creatures = GenerateCreatures();
+
+			// generate a random set of rooms to put enemies in
+			int[] RandomRooms = Enumerable.Range(1, Dungeon.Length - 1).ToArray();
+			gen.Shuffle(RandomRooms);
+
+			// number of creatures = difficulty score
+			int DifficultyLevel = Int32.Parse(PlayerData[1]);
+			for (int i = 0; i <= DifficultyLevel; i++)
+			{
+				Dungeon[RandomRooms[i]].EnemiesRoom.Add(creatures[i]);
+			}
+		}
 
 		//roll a "die" and have the user time the outcome
 		public int DiceRoll(string Prompt, int Max = 20)
 		{
 			//remove any pending keys
-			while (Console.KeyAvailable)
-				Console.ReadKey(intercept: true);
+			//while (Console.KeyAvailable)
+			//Console.ReadKey(intercept: true);
 
 			//create a random order of numbers
 			Random Random = new Random();
-			Range.EndAt(20);
 			int[] RandomWheel = Enumerable.Range(1, Max).ToArray();
 			Random.Shuffle(RandomWheel);
 			int RandomPos = 0;
