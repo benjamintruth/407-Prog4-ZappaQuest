@@ -68,6 +68,9 @@ namespace ZappaQuest
 					if (thePlayer.Inventory.Count > 0) {
 						Console.WriteLine("3. DROP ITEM");
 					}
+					if (thePlayer.Inventory.OfType<Food>().Any()) {
+						Console.WriteLine("4. EAT FOOD");
+					}
 					Console.WriteLine("5. REST");
 					String initialTurnChoice = Console.ReadLine();
 
@@ -88,6 +91,9 @@ namespace ZappaQuest
 					}
 					else if (initialTurnChoice == "3") {
 						currentRoom.DropItem(thePlayer);
+					}
+					else if (initialTurnChoice == "4") {
+						currentRoom.EatFod(thePlayer);
 					}
 					else if (initialTurnChoice == "5") {
 						thePlayer.RestPlayer();

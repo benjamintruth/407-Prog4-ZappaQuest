@@ -311,6 +311,28 @@ namespace ZappaQuest
 			}
 		}
 
+		public void EatFod(Frank player) {
+			var foodItem = player.Inventory.OfType<Food>().ToList();
+
+			if (foodItem.Count == 0) {
+				Console.WriteLine("You have no food items in your inventory to eat.");
+				return;
+			}
+			Console.WriteLine("Please Select a food item to eat:");
+			for (int i = 0; i < foodItem.Count; i++) {
+				Console.WriteLine($"{i + 1}. {foodItem[i].Description} (Max Heal: {foodItem[i].Consumable})");
+			}
+			int choice;
+			do {
+				Console.Write("Please eneter your choice: ");
+			} while (!int.TryParse(Console.ReadLine(), out choice) || choice < 1 || choice > foodItem.Count);
+
+			var selectFoodItem = foodItem[choice - 1];
+			player.Inventory.Remove(selectFoodItem);
+
+			Console.WriteLine($"You have chosen to eat {selectFoodItem.Description}");
+		}
+
 		public void Navigate(Frank player)
 		{
 
