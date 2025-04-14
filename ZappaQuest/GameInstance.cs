@@ -179,7 +179,7 @@ namespace ZappaQuest
 					break;
 			}
 
-			Console.WriteLine($"Your difficulty level is: {PlayerData[0]}. ");
+			Console.WriteLine($"Your difficulty level is: {PlayerData[1]}. ");
 			Console.WriteLine("\nIt's time to be Frank. Let's play ZAPPA QUEST!\n");
 			return PlayerData;
 		}
