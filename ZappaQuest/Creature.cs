@@ -95,6 +95,28 @@ namespace ZappaQuest
 		//fighting
 		public void fight(Enemy opponent)
 		{
+
+			//Display a random battle message
+			Random randomText = new Random();
+			String[] battleMessages = {
+				$"{opponent.Name} flies at you in a rage!",
+				$"{opponent.Name} decides your time is up!",
+				$"{opponent.Name} doesn't like your music!",
+				$"{opponent.Name} thinks Frank is a dumb name!",
+				$"{opponent.Name} called you weak! You'll show them!",
+				$"{opponent.Name} smells bad and you've had enough!",
+				$"{opponent.Name} is egging for a fight!",
+				$"{opponent.Name} initiates a battle!",
+				$"{opponent.Name} wants to end your career!",
+				$"{opponent.Name} is suddenly consumed by rage!",
+				$"{opponent.Name} disagrees with you on key social issues!",
+				$"{opponent.Name} charges at you!",
+				$"{opponent.Name} decides the fist is mightier than the pen!",
+				$"{opponent.Name} is insulted by your existence!",
+				$"You've had enough of {opponent.Name}!",
+			};
+			int randomTextInt = randomText.Next(battleMessages.Length);
+			Console.WriteLine(battleMessages[randomTextInt]);
 			while (true)
 			{
 				//heal every turn from the power of jazz

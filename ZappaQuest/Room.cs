@@ -1,10 +1,7 @@
-using System.Collections.Generic;
-
 namespace ZappaQuest
 {
 	public class Room
 	{
-		// DEV
 		public string Name { get; }
 		public string Description { get; }
 		public Room[] Exits { get; }
@@ -163,7 +160,7 @@ namespace ZappaQuest
 			Console.WriteLine($"You are in the {Name}.");
 			Console.WriteLine(Description);
 
-			// TODO: print creatures
+			// print room information based on contents
 			PrintExits();
 			PrintRoomItems();
 			PrintRoomEnemies();
@@ -224,7 +221,6 @@ namespace ZappaQuest
 					Console.WriteLine(exitDisplayLine);
 				}
 			}
-
 		}
 
 		public void PrintRoomItems()

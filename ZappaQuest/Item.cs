@@ -1,4 +1,3 @@
-using System;
 namespace ZappaQuest
 {
 	// ITEM CLASS
@@ -61,13 +60,6 @@ namespace ZappaQuest
 		{
 			return $"Weapon: {Description}, Attacks: {NumAttacksPerTurn}, Max damage: {MaxDamage}";
 		}
-
-		// DEV may no longer be needed
-		// public int CompareTo(Weapon other)
-		// {
-		// 	if (other == null) return 1;
-		// 	return (this.MaxDamage * NumAttacksPerTurn).CompareTo(other.MaxDamage * other.NumAttacksPerTurn);
-		// }
 	} // End Weapon Subclass
 
 	// Armor Subclass

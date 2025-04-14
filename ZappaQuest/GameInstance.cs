@@ -1,5 +1,3 @@
-using System.Threading.Tasks.Dataflow;
-
 namespace ZappaQuest
 {
 	public class GameInstance
@@ -38,13 +36,6 @@ namespace ZappaQuest
 			// create player creature (Frank)
 			Frank thePlayer = new Frank(this);
 
-			// DEV
-			Console.WriteLine($"Dungeon length: {Dungeon.Length}");
-			foreach (Room room in Dungeon)
-			{
-				room.PrintRoomDescription();
-			}
-
 			while (!GAME_OVER)
 			{
 				// main game loop ( LOOP = TURN )
@@ -81,7 +72,7 @@ namespace ZappaQuest
 					{
 						GAME_OVER = true;
 						inSameRoom = false;
-						Console.WriteLine($"Congratulations {PlayerData[1]}! You've reached the end of your journey through ZappaQuest. Your adventure has come to a successful conclusion. You win!");
+						Console.WriteLine($"Congratulations {PlayerData[0]}! You've reached the end of your journey through ZappaQuest. Your adventure has come to a successful conclusion. You win!");
 					}
 					// decide what to do in the room 
 					else
@@ -125,7 +116,15 @@ namespace ZappaQuest
 								inSameRoom = false;
 								break;
 							case "TAKE ITEM":
-								currentRoom.PickUpItem(thePlayer);
+								if (currentRoom.EnemiesRoom.Count > 0)
+								{
+									Console.WriteLine($"You try to take the item, but the {currentRoom.EnemiesRoom[0].Name} stops you!");
+									thePlayer.fight(currentRoom.EnemiesRoom[0]);
+								}
+								else
+								{
+									currentRoom.PickUpItem(thePlayer);
+								}
 								break;
 							case "DROP ITEM":
 								currentRoom.DropItem(thePlayer);
@@ -165,7 +164,7 @@ namespace ZappaQuest
 				case "alright":
 				case "sure":
 				case "absolutely":
-					PlayerData[1] = "15";
+					PlayerData[1] = "20";
 					break;
 				case "no":
 				case "n":
@@ -182,7 +181,7 @@ namespace ZappaQuest
 					break;
 			}
 
-			Console.WriteLine($"Your difficulty level is: {PlayerData[1]}. ");
+			Console.WriteLine($"Your difficulty level is: {PlayerData[0]}. ");
 			Console.WriteLine("\nIt's time to be Frank. Let's play ZAPPA QUEST!\n");
 			return PlayerData;
 		}
@@ -471,22 +470,27 @@ namespace ZappaQuest
 		{
 			// new random object
 			Random gen = new Random();
-			// creatures list
-			Enemy[] creatures = GenerateCreatures().ToArray();
+			// number of creatures = difficulty score
+			int DifficultyLevel = Int32.Parse(PlayerData[1]);
+
+			// Create a creatures list, copy it if there are more rooms than enemies
+			List<Enemy> creaturesList = GenerateCreatures();
+			int startcount = creaturesList.Count;
+			int repeats = (DifficultyLevel / creaturesList.Count);
+			for (int i = 0; i < repeats; i++)
+			{
+				creaturesList.AddRange(GenerateCreatures());
+			}
+			Enemy[] creatures = creaturesList.ToArray();
 			gen.Shuffle(creatures);
 
 			// generate a random set of rooms to put enemies in
 			int[] RandomRooms = Enumerable.Range(1, Dungeon.Length - 1).ToArray();
 			gen.Shuffle(RandomRooms);
 
-			// number of creatures = difficulty score
-			int DifficultyLevel = Int32.Parse(PlayerData[1]);
-			for (int i = 0; i <= DifficultyLevel; i++)
-			{
-				// DEV
-				Console.WriteLine($"Dungeon Length: {Dungeon.Length}");
-				Console.WriteLine($"Random Room at i: {RandomRooms[i]}");
 
+			for (int i = 0; i < DifficultyLevel; i++)
+			{
 				Dungeon[RandomRooms[i]].EnemiesRoom.Add(creatures[i]);
 			}
 		}
