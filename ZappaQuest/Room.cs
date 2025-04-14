@@ -259,55 +259,41 @@ namespace ZappaQuest
 
 			// Allow player to make choice, and accept int
 			Console.WriteLine("Please enter which item you want to pick up: ");
-			string choice = Console.ReadLine();
+			int selection = GameInstance.TakeInput(ItemsRoom.Count);
 
-			if (int.TryParse(choice, out int selection))
+			Item selectItem = ItemsRoom[selection - 1];
+			// WEAPON/ ARMOR
+
+			// If item choice is a weapon, equip weapon
+			if (selectItem is Weapon weapon)
 			{
-				if (selection >= 1 && selection <= ItemsRoom.Count)
-				{
-					Item selectItem = ItemsRoom[selection - 1];
-					// WEAPON/ ARMOR
+				player.judgeStealing(weapon, player.EquippedWeapon);
+				player.EquippedWeapon = weapon;
+				ItemsRoom.Remove(selectItem);
+				Console.WriteLine($"you equipped: {player.EquippedWeapon.Description}");
 
-					// If item choice is a weapon, equip weapon
-					if (selectItem is Weapon weapon)
-					{
-						player.judgeStealing(weapon, player.EquippedWeapon);
-						player.EquippedWeapon = weapon;
-						ItemsRoom.Remove(selectItem);
-						Console.WriteLine($"you equipped: {player.EquippedWeapon.Description}");
-
-					}
-					// If item choice is armor, equip armor
-					else if (selectItem is Armor armor)
-					{
-						player.judgeStealing(armor, player.EquippedArmor);
-						player.EquippedArmor = armor;
-						ItemsRoom.Remove(selectItem);
-						Console.WriteLine($"you equipped: {player.EquippedArmor.Description}");
-					}
-					else
-					{
-						// Add item to player inventory
-						bool addSuccess = player.PickUpItem(selectItem);
-						if (addSuccess)
-						{
-							ItemsRoom.Remove(selectItem);
-							Console.WriteLine($"You have successfully picked up: {selectItem.Information()}");
-						}
-						else
-						{
-							Console.WriteLine("inventory is full. You cannot pick up item.");
-						}
-					}
-				}
-				else
-				{
-					Console.WriteLine("Invalid item number");
-				}
+			}
+			// If item choice is armor, equip armor
+			else if (selectItem is Armor armor)
+			{
+				player.judgeStealing(armor, player.EquippedArmor);
+				player.EquippedArmor = armor;
+				ItemsRoom.Remove(selectItem);
+				Console.WriteLine($"you equipped: {player.EquippedArmor.Description}");
 			}
 			else
 			{
-				Console.WriteLine("Sorry, I didn't get that. Please enter a number.");
+				// Add item to player inventory
+				bool addSuccess = player.PickUpItem(selectItem);
+				if (addSuccess)
+				{
+					ItemsRoom.Remove(selectItem);
+					Console.WriteLine($"You have successfully picked up: {selectItem.Information()}");
+				}
+				else
+				{
+					Console.WriteLine("inventory is full. You cannot pick up item.");
+				}
 			}
 		} // end PickUpItem Method
 
@@ -327,25 +313,11 @@ namespace ZappaQuest
 			// Ask player which item to drop
 			Console.WriteLine("Which item would you like to drop from inventory?");
 			Console.WriteLine("Be wise...");
-			string choice = Console.ReadLine();
+			int selection = GameInstance.TakeInput(player.Inventory.Count);
 
-			if (int.TryParse(choice, out int selection))
-			{
-				if (selection >= 1 && selection <= player.Inventory.Count)
-				{
-					Item selectItem = player.Inventory[selection - 1];
-					player.DropItem(selectItem);
-					ItemsRoom.Add(selectItem);
-				}
-				else
-				{
-					Console.WriteLine("Invalid selection. Please try again.");
-				}
-			}
-			else
-			{
-				Console.WriteLine("Sorry, I didn't get that. Please enter a valid number.");
-			}
+			Item selectItem = player.Inventory[selection - 1];
+			player.DropItem(selectItem);
+			ItemsRoom.Add(selectItem);
 		}
 
 		public void EatFood(Frank player)

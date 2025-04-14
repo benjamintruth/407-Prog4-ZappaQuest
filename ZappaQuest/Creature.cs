@@ -95,7 +95,6 @@ namespace ZappaQuest
 		//fighting
 		public void fight(Enemy opponent)
 		{
-
 			//Display a random battle message
 			Random randomText = new Random();
 			String[] battleMessages = {

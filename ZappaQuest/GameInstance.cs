@@ -2,18 +2,15 @@ namespace ZappaQuest
 {
 	public class GameInstance
 	{
-		public bool GAME_OVER = false;//
+		public bool GAME_OVER = false;
 		public String[] PlayerData = new String[2];
-		//whether it's already displayed "(press any key to stop)"
 		public bool LearnedDice = false;
-
 		public Room[] InstanceDungeon;
 
 		public void Initialize()
 		{
 			Console.WriteLine("WELCOME 2 ZAPPA QUEST!");
 			PlayerData = GreetPlayer();
-
 			RunGame();
 		}
 
@@ -25,6 +22,7 @@ namespace ZappaQuest
 
 			// create a number of rooms based on difficulty level
 			Room[] Dungeon = BuildRooms(DifficultyLevel * 2);
+			// attach dungeon to game instance
 			InstanceDungeon = Dungeon;
 
 			// generate loot and add as drops
@@ -43,13 +41,13 @@ namespace ZappaQuest
 
 				// print room description
 				currentRoom.PrintRoomDescription();
+				Console.WriteLine("\n");
 
 				// create loop for actions in this room until we leave
 				bool inSameRoom = true;
 
 				while (inSameRoom)
 				{
-
 					// if room has aggressive enemy, auto-fight enemy
 					if (currentRoom.EnemiesRoom.Count > 0)
 					{
@@ -81,9 +79,9 @@ namespace ZappaQuest
 						int listOption = 1;
 						Dictionary<int, string> option = new Dictionary<int, string>();
 
+						// generate list of options for user to select conditonally
 						Console.WriteLine("These are your options:");
 						option[listOption++] = "TAKE EXIT";
-
 						if (currentRoom.ItemsRoom.Count > 0)
 						{
 							option[listOption++] = "TAKE ITEM";
@@ -535,7 +533,7 @@ namespace ZappaQuest
 			int value;
 			while (input.Length > 1 || int.TryParse(input, out value) && (value <= 0 || value > max))
 			{
-				Console.Write("Please enter a valid input");
+				Console.WriteLine("Please enter a valid input");
 				input = Console.ReadLine();
 			}
 			return value;
