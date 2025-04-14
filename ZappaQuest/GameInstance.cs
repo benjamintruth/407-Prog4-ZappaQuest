@@ -531,7 +531,7 @@ namespace ZappaQuest
 		{
 			string input = Console.ReadLine();
 			int value;
-			while (input.Length > 1 || int.TryParse(input, out value) && (value <= 0 || value > max))
+			while (input.Length > 1 || !(Int32.TryParse(input, out value)) || (value <= 0 || value > max))
 			{
 				Console.WriteLine("Please enter a valid input");
 				input = Console.ReadLine();
