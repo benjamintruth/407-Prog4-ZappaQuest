@@ -78,7 +78,7 @@ namespace ZappaQuest
 			name: "Frank Zappa",
 			description: "the man himself",
 			health: 100,
-			equippedWeapon: new Weapon("hands", false, 1, 2, false),
+			equippedWeapon: new Weapon("hands of god", false, 3, 2000000, false),
 			equippedArmor: new Armor("skin", false, 0, false),
 			currentGame: currentGame
 		)
@@ -88,14 +88,27 @@ namespace ZappaQuest
 		}
 
 		//fighting
-		public void fight(Creature opponent)
+		public void fight(Enemy opponent)
 		{
 			while (true)
 			{
+				//heal every turn from the power of jazz
+				for (int i = 0; i < Inventory.Count; i++)
+				{
+					if (Inventory[i] is MagicItem)
+					{
+						Console.WriteLine($"{Name} healed {((MagicItem)Inventory[i]).JazzPower} from {Inventory[i].Description}");
+						Health = Health + ((MagicItem)Inventory[i]).JazzPower;
+					}
+				}
+
 				//attack the monster, attack() returns if they died
 				if (attack(opponent))
 				{
+					// take their gear if possible
 					stealFrom(opponent);
+					// remove the opponent from the game
+					CurrentGame.InstanceDungeon[CurrentRoomIndex].EnemiesRoom.Remove(opponent);
 					return;
 				}
 				//monster attacks you
@@ -107,7 +120,7 @@ namespace ZappaQuest
 			}
 		}
 
-		private void judgeStealing(Item choice, Item reject, Item choice2 = null, Item reject2 = null)
+		public void judgeStealing(Item choice, Item reject, Item choice2 = null, Item reject2 = null)
 		{
 			if (choice2 is not null)
 			{
@@ -161,6 +174,24 @@ namespace ZappaQuest
 			}
 
 			Console.WriteLine($"You are resting and restored {restHealing} HP. Your health is now: {Health}");
+		}
+
+		public void ViewInventory()
+		{
+			Console.WriteLine("---INVENTORY---");
+			Console.WriteLine("Your Inventory Contains: ");
+			if (Inventory.Count == 0)
+			{
+				Console.WriteLine("You are not carrying anything...");
+			}
+			else
+			{
+				for (int i = 0; i < Inventory.Count; i++)
+				{
+					Console.WriteLine($"{i + 1}. {Inventory[i].Description}");
+				}
+			}
+			Console.WriteLine("----------------\n");
 		}
 
 		private void stealFrom(Creature opponent)

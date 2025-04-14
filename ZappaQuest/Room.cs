@@ -270,6 +270,30 @@ namespace ZappaQuest
 				if (selection >= 1 && selection <= ItemsRoom.Count)
 				{
 					Item selectItem = ItemsRoom[selection - 1];
+					// WEAPON/ ARMOR
+
+					// If item choice is a weapon, equip weapon
+					if (selectItem is Weapon weapon)
+					{
+						player.judgeStealing(weapon, player.EquippedWeapon);
+						player.EquippedWeapon = weapon;
+						ItemsRoom.RemoveAt(selection - 1);
+						Console.WriteLine($"you equipped: {player.EquippedWeapon.Description}");
+
+					}
+					// If item choice is armor, equip armor
+					if (selectItem is Armor armor)
+					{
+						player.judgeStealing(armor, player.EquippedArmor);
+						player.EquippedArmor = armor;
+						ItemsRoom.RemoveAt(selection - 1);
+						Console.WriteLine($"you equipped: {player.EquippedArmor.Description}");
+					}
+
+					// Judge 
+
+
+
 
 					// Add item to player inventory
 					bool addSuccess = player.PickUpItem(selectItem);

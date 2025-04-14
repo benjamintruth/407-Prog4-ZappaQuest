@@ -9,6 +9,8 @@ namespace ZappaQuest
 		//whether it's already displayed "(press any key to stop)"
 		public bool LearnedDice = false;
 
+		public Room[] InstanceDungeon;
+
 		public void Initialize()
 		{
 			Console.WriteLine("WELCOME 2 ZAPPA QUEST!");
@@ -25,6 +27,7 @@ namespace ZappaQuest
 
 			// create a number of rooms based on difficulty level
 			Room[] Dungeon = BuildRooms(DifficultyLevel * 2);
+			InstanceDungeon = Dungeon;
 
 			// generate loot and add as drops
 			AddLootToDungeon(Dungeon);
@@ -60,58 +63,72 @@ namespace ZappaQuest
 						}
 					}
 
-					// Set option to 1st option 
-					int listOption = 1;
-					Dictionary<int, string> option = new Dictionary<int, string>();
-
-					Console.WriteLine("These are your options:");
-					option[listOption++] = "TAKE EXIT";
-
-					if (currentRoom.ItemsRoom.Count > 0)
+					// check if frank is dead
+					if (!thePlayer.isAlive())
 					{
-						option[listOption++] = "TAKE ITEM";
+						GAME_OVER = true;
+						Console.WriteLine("You Lose! You were not good at being Frank! Frank is dead! Not Groovy! GG!");
 					}
-					if (thePlayer.Inventory.Count > 0)
+					else if (currentRoom.IsDungeonExit)
 					{
-						option[listOption++] = "DROP ITEM";
+						GAME_OVER = true;
+						Console.WriteLine("Congratulations! You've reached the end of your journey through ZappaQuest. Your adventure has come to a successful conclusion. You win!");
 					}
-					if (thePlayer.Inventory.OfType<Food>().Any())
+					// decide what to do in the room 
+					else
 					{
-						option[listOption++] = "EAT FOOD";
-					}
-					option[listOption++] = "REST";
-					option[listOption++] = "VIEW INVENTORY";
+						// Set option to 1st option 
+						int listOption = 1;
+						Dictionary<int, string> option = new Dictionary<int, string>();
 
-					foreach (var entry in option)
-					{
-						Console.WriteLine($"{entry.Key}. {entry.Value}");
-					}
+						Console.WriteLine("These are your options:");
+						option[listOption++] = "TAKE EXIT";
 
-					int selectOption = TakeInput(listOption);
-					switch (option[selectOption])
-					{
-						case "TAKE EXIT":
-							currentRoom.Navigate(thePlayer);
-							inSameRoom = false;
-							break;
-						case "TAKE ITEM":
-							currentRoom.PickUpItem(thePlayer);
-							break;
-						case "DROP ITEM":
-							currentRoom.DropItem(thePlayer);
-							break;
-						case "EAT FOOD":
-							currentRoom.EatFood(thePlayer);
-							break;
-						case "REST":
-							thePlayer.RestPlayer();
-							break;
-						case "VIEW INVENTORY":
-							Console.WriteLine("Woops, not here yet.");
-							break;
+						if (currentRoom.ItemsRoom.Count > 0)
+						{
+							option[listOption++] = "TAKE ITEM";
+						}
+						if (thePlayer.Inventory.Count > 0)
+						{
+							option[listOption++] = "DROP ITEM";
+						}
+						if (thePlayer.Inventory.OfType<Food>().Any())
+						{
+							option[listOption++] = "EAT FOOD";
+						}
+						option[listOption++] = "REST";
+						option[listOption++] = "VIEW INVENTORY";
+
+						foreach (var entry in option)
+						{
+							Console.WriteLine($"{entry.Key}. {entry.Value}");
+						}
+
+						int selectOption = TakeInput(listOption);
+						switch (option[selectOption])
+						{
+							case "TAKE EXIT":
+								currentRoom.Navigate(thePlayer);
+								inSameRoom = false;
+								break;
+							case "TAKE ITEM":
+								currentRoom.PickUpItem(thePlayer);
+								break;
+							case "DROP ITEM":
+								currentRoom.DropItem(thePlayer);
+								break;
+							case "EAT FOOD":
+								currentRoom.EatFood(thePlayer);
+								break;
+							case "REST":
+								thePlayer.RestPlayer();
+								break;
+							case "VIEW INVENTORY":
+								thePlayer.ViewInventory();
+								break;
+						}
 					}
 				}
-				// GAME_OVER = true; */
 			}
 		}
 
@@ -243,18 +260,18 @@ namespace ZappaQuest
 				new Armor("Goblin Girl Suit", false, 12, true),
 				new Treasure("Black Napkin", false, 50),
 				new Food("Peaches En Regalia Smoothie", false, 24),
-				new MagicItem("Joe's Garage Glitter Amulet", 77),
+				new MagicItem("Joe's Garage Glitter Amulet", 6),
 				new Weapon("Valley Girl Microphone", false, 3, 13, true),
 				new Armor("Cosmic Debris Chest Armor", false, 8, true),
 				new Treasure("Apostrophe' Shiny Vinyl", false, 70),
 				new Food("Muffin from Reasearch Laboratory", false, 20),
-				new MagicItem("Yellow Frozen Snow Cone", 50),
+				new MagicItem("Yellow Frozen Snow Cone", 5),
 				new Food("Easter Hay Watermelon", false, 50),
 				new Weapon("Zomby Woof Fangs", false, 4, 10, true),
 				new Armor("I'm The Slime Shield", false, 15, true),
 				new Treasure("FREAK OUT! Deluxe LP", true, 150),
 				new Food("Pojama People Pudding", true, 20),
-				new MagicItem("Uncle Remus Jazz Cube", 70),
+				new MagicItem("Uncle Remus Jazz Cube", 7),
 				new Weapon("Inca Roads Laser Beam", true, 1, 60, false),
 				new Armor("Plastic People Chestplate", false, 7, true),
 				new Treasure("We're Only in it For The Money Coins!", false, 90),
